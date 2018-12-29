@@ -22,7 +22,7 @@ class TestValidationRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required',
+            'username' => 'required|min_length[5]',
             'password' => 'required',
             'passconf' => 'required',
             'email'    => 'email'

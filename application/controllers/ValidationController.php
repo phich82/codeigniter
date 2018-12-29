@@ -12,19 +12,9 @@ class ValidationController extends CI_Controller
      */
     public function index()
     {
-        $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
+        new TestValidationRequest();
+
         $this->lang->load('validation_lang');
-
-        // $this->form_validation->set_rules('username', 'Username', 'required');
-        // $this->form_validation->set_rules('password', 'Password', 'required');
-        // $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
-        // $this->form_validation->set_rules('email', 'Email', 'required');
-
-        //$this->form_validation->run();
-        $validation = new TestValidationRequest();
-        //$validation->validate();
-
 
         return $this->load->view('validation/index');
     }
