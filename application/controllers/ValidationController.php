@@ -14,7 +14,7 @@ class ValidationController extends CI_Controller
     {
         new TestValidationRequest();
 
-        $this->lang->load('validation_lang');
+        $this->lang->load('form_validation_lang');
 
         return $this->load->view('validation/index');
     }

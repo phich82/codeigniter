@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 require 'application/core/validator/FormRequest.php';
 
@@ -22,10 +23,10 @@ class TestValidationRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|min_length[5]',
-            'password' => 'required',
-            'passconf' => 'required',
-            'email'    => 'email'
+            'username' => 'required|min_length[5]|max_length[12]',
+            'password' => 'required|min_length[8]',
+            'passconf' => 'required|matches[password]',
+            'email'    => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]'
         ];
     }
 

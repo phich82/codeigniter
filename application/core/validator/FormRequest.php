@@ -8,6 +8,9 @@ require 'Validator.php';
  */
 class FormRequest extends Validator
 {
+    protected $request;
+    protected $input;
+
     /**
      * Constructor.
      *
@@ -15,6 +18,10 @@ class FormRequest extends Validator
      */
     public function __construct()
     {
+        $input = new CI_Input();
+        $this->input   = $input;
+        $this->request = $input;
+    
         $this->_validate();
     }
 
@@ -29,10 +36,8 @@ class FormRequest extends Validator
             // load the form_validation library
             $CI =& get_instance();
             $CI->load->library('form_validation');
-
             // validate form
-            $CI->form_validation->set_rules($this->_getRules());
-            $CI->form_validation->run();
+            $CI->form_validation->set_rules($this->_getRules())->run();
         }
     }
 
@@ -67,25 +72,39 @@ class FormRequest extends Validator
     private function _getMessages()
     {
         $messages = [];
+        $dot = '.';
         foreach ($this->messages() as $field_rule => $message) {
             if (is_array($message)) {
-                if (strpos($field_rule, '.') !== false) {
-                    throw new Exception("Field [$field_rule] is not correct.");
+                if (strpos($field_rule, $dot) !== false) {
+                    $this->_throwError($field_rule);
                 }
                 $messages[$field_rule] = $message;
             } else if (is_string($message)) {
-                if (strpos($field_rule, '.') === false) {
-                    throw new Exception("Field [$field_rule] is not correct.");
+                if (strpos($field_rule, $dot) === false) {
+                    $this->_throwError($field_rule);
                 }
-                $fieldRule = explode('.', $field_rule);
+                $fieldRule = explode($dot, $field_rule);
                 if (count($fieldRule) !== 2) {
-                    throw new Exception("Field [$field_rule] is not correct.");
+                    $this->_throwError($field_rule);
                 }
                 $messages[$fieldRule[0]][$fieldRule[1]] = $message;
             } else {
-                throw new Exception("Field [$field_rule] is not correct.");
+                $this->_throwError($field_rule);
             }
         }
         return $messages;
+    }
+
+    /**
+     * Throw exception
+     *
+     * @param string $field [field name of rule]
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function _throwError($field)
+    {
+        throw new Exception("Field [$field] is not correct.");
     }
 }

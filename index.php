@@ -303,7 +303,14 @@ switch (ENVIRONMENT)
 		exit(3); // EXIT_CONFIG
 	}
 
-	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
+    define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
+    
+/*
+ * --
+ * LOAD THE COMPOSER AUTOLOAD FILE
+ * --
+ */
+include_once './vendor/autoload.php';
 
 /*
  * --------------------------------------------------------------------
