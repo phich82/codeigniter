@@ -55,3 +55,6 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['datatable'] = 'DataTableController/index';
 $route['validation'] = 'ValidationController/index';
+
+$route['database'] = 'DatabaseController/index';
+$route['library'] = 'LibraryController/index';

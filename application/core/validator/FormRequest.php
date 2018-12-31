@@ -79,7 +79,7 @@ class FormRequest extends Validator
                     $this->_throwError($field_rule);
                 }
                 $messages[$field_rule] = $message;
-            } else if (is_string($message)) {
+            } elseif (is_string($message)) {
                 if (strpos($field_rule, $dot) === false) {
                     $this->_throwError($field_rule);
                 }

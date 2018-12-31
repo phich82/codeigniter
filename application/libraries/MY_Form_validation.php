@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Define the extra rules for Form Validation
+ * (Extending Native Libraries: the class name must start with MY_ as in config/config.php)
  */
 class MY_Form_validation extends CI_Form_validation
 {
@@ -30,7 +31,7 @@ class MY_Form_validation extends CI_Form_validation
      */
     public function is_email($email)
     {
-        // define message for this rule here or set message in lang file (form_validation_lang.php)        
+        // define message for this rule here or set message in lang file (form_validation_lang.php)
         // $this->CI->form_validation->set_message('is_email', 'The %s is not valid.');
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }

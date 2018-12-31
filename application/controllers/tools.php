@@ -88,7 +88,7 @@ class Tools extends CI_Controller
             if ($this->migration->version($version) === false) {
                 show_error($this->migration->error_string());
             } else {
-                $this->message("Migrations run successfully");
+                $this->message("Migrations run successfully.");
             }
             return;
         }
@@ -96,7 +96,7 @@ class Tools extends CI_Controller
         if ($this->migration->latest() === false) {
             show_error($this->migration->error_string());
         } else {
-            $this->message("Migrations run successfully");
+            $this->message("Migrations run successfully.");
         }
     }
 
@@ -286,7 +286,7 @@ class Seeder
     }
     /**
      * Run another seeder
-     * 
+     *
      * @param string $seeder Seeder classname
      *
      * @return void
