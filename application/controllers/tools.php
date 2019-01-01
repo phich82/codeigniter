@@ -51,11 +51,11 @@ class Tools extends CI_Controller
     public function help()
     {
         $result  = "The following are the available command line interface commands\n\n";
-        $result .= "php index.php tools migration [file_name] [table_name]  Create new migration file\n";
-        $result .= "php index.php tools migrate [version_number]            Run all migrations. The version_number is optional.\n";
-        $result .= "php index.php tools seeder [file_name]                  Creates a new seed file.\n";
-        $result .= "php index.php tools seed [file_name]                    Run the specified seed file.\n";
-        $result .= "php index.php tools seed                                Run all seed files.\n";
+        $result .= "php index.php tools migration [file_name] [table_name] [custom]  Create new migration file. The custom argument is optional for custom template.\n";
+        $result .= "php index.php tools migrate [version_number]                     Run all migrations. The version_number is optional.\n";
+        $result .= "php index.php tools seeder [file_name]                           Creates a new seed file.\n";
+        $result .= "php index.php tools seed [file_name]                             Run the specified seed file.\n";
+        $result .= "php index.php tools seed                                         Run all seed files.\n";
 
         $this->message($result);
     }
@@ -63,14 +63,15 @@ class Tools extends CI_Controller
     /**
      * Create a migration file
      *
-     * @param string $name  [file_name]
-     * @param string $table [table_name]
+     * @param string $name   [file_name]
+     * @param string $table  [table_name]
+     * @param bool   $custom [table_name]
      *
      * @return void
      */
-    public function migration($name, $table = null)
+    public function migration($name, $table = null, $custom = false)
     {
-        $this->make_migration($name, $table);
+        $this->make_migration($name, $table, $custom);
     }
 
     /**
@@ -133,15 +134,17 @@ class Tools extends CI_Controller
      *
      * @return void
      */
-    protected function make_migration($name, $table = null)
+    protected function make_migration($name, $table = null, $custom = false)
     {
         $timestamp = date('YmdHis');
         $table = !empty($table) ? $table : strtolower($name);
-
-        $path = $this->migration_path."{$timestamp}_{$name}.php";
+        $path  = $this->migration_path."{$timestamp}_{$name}.php";
         $migration = fopen($path, "w") or die("Unable to create the migration file!");
+        $template  = in_array(is_string($custom) ? strtolower($custom) : $custom, [true, 'true', 1])
+                        ? $this->_template_migration_custom($name, $table)
+                        : $this->_template_migration($name, $table);
 
-        fwrite($migration, $this->_template_migration($name, $table));
+        fwrite($migration, $template);
         fclose($migration);
 
         $this->message("The migration file has successfully been created.\n$path");
@@ -198,7 +201,62 @@ class Migration_$name extends CI_Migration
         ]);
 
         \$this->dbforge->add_key('id', true);
-        \$this->dbforge->create_table('$table');
+        \$this->dbforge->create_table('$table', true, ['ENGINE' => 'InnoDB']);
+    }
+
+    /**
+     * Drop table
+     *
+     * @return void
+     */
+    public function down()
+    {
+        \$this->dbforge->drop_table('$table');
+    }
+}
+        ";
+    }
+
+    /**
+     * The custom migration template
+     *
+     * @param string $name  [file_name]
+     * @param string $table [table_name]
+     *
+     * @return string
+     */
+    private function _template_migration_custom($name, $table)
+    {
+        return "
+<?php
+
+class Migration_$name extends My_Migration
+{
+    /**
+     * Create table with columns
+     *
+     * @return void
+     */
+    public function up()
+    {
+        \$this->create_table('$table', [
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true,
+                'primary_key' => true    // primary key
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'foreign_key' => [
+                    'table' => 'users', // reference table
+                    'field' => 'id'     // reference column
+                ]
+            ],
+        ], 'INNODB');
     }
 
     /**

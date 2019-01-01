@@ -28,9 +28,10 @@ class Migration_create_users_table extends CI_Migration
                 'null' => false
             ]
         ]);
-
+        
+        $attributes = ['ENGINE' => 'InnoDB', 'CHARACTER SET' => 'utf8', 'COLLATE' => 'utf8_general_ci'];
         $this->dbforge->add_key('id', true);
-        $this->dbforge->create_table('users');
+        $this->dbforge->create_table('users', true, $attributes);
     }
 
     /**

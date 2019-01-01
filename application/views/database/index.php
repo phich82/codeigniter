@@ -2,6 +2,9 @@
 <head>
     <title>Database Basic</title>
 
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="/assets/css/lib/bootstrap.min.css">
 </head>
 <body>

@@ -26,7 +26,11 @@ class DatabaseController extends CI_Controller
             'date < ' => date('Y-m-d'),
             'id < ' => 10
         ];
-        var_dump($this->message->findBy($params));exit;
+        var_dump(
+            $this->message->deleteMessages([19, 100])//,
+            //$this->message->find('1sdfsd'),
+            //$this->message->findBy($params)
+        );exit;
         $this->load->library('form_validation');
 
         return $this->load->view('database/index');

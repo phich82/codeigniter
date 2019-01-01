@@ -6,6 +6,23 @@
 trait DBHelperTrait
 {
     /**
+     * Constructor
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        
+        // load the database library if not yet
+        if (!property_exists($this, 'db')) {
+            $CI = &get_instance();
+            $CI->load->database();
+            $this->db = $CI->db;
+        }
+    }
+    
+    /**
      * Execute the sql query
      *
      * @param string $sql [sql query]
@@ -18,6 +35,9 @@ trait DBHelperTrait
             return $this->db->query($sql);
         } catch (Exception $e) {
             log_message('error', $e);
+            if (function_exists('report')) {
+                report($e);
+            }
             return false;
         }
     }
@@ -49,13 +69,145 @@ trait DBHelperTrait
     }
 
     /**
+     * Get all records
+     *
+     * @return CI_DB_result
+     */
+    public function all()
+    {
+        return $this->db->get($this->table())->result();
+    }
+
+    /**
+     * Get all records
+     *
+     * @return CI_DB_result
+     */
+    public function getAll()
+    {
+        return $this->all();
+    }
+
+    /**
+     * Find by id
+     *
+     * @param int $id [id]
+     *
+     * @return array
+     */
+    public function find($id)
+    {
+        return $this->db->get_where($this->table(), [$this->primary_key() => $id])->result();
+    }
+
+    /**
+     * Find by conditions
+     *
+     * @param array $conditions []
+     *
+     * @return array
+     */
+    public function findBy($conditions = [])
+    {
+        if (!is_array($conditions) || empty($conditions)) {
+            return null;
+        }
+        return $this->db->get_where($this->table(), $conditions)->result();
+    }
+
+    /**
+     * Insert data
+     *
+     * @param array $params []
+     *
+     * @return bool
+     */
+    public function insert($params = [])
+    {
+        return empty($params) ? false : $this->db->insert($this->table(), $params);
+    }
+
+    /**
+     * Insert multiple records
+     *
+     * @param array $params [[record1], [record2],...]
+     *
+     * @return bool
+     */
+    public function insertMany($params = [])
+    {
+        return empty($params) ? false : $this->db->insert_batch($this->table(), $params);
+    }
+
+    /**
+     * Update record
+     *
+     * @param int   $id     [id]
+     * @param array $params []
+     *
+     * @return bool
+     */
+    public function update($id, $params = [])
+    {
+        return empty($id) || empty($params) ? false : $this->db->update($this->table(), $params, [$this->primary_key() => $id]);
+    }
+
+    /**
+     * Update multiple records
+     *
+     * @param int    $id         [id]
+     * @param array  $params     []
+     * @param string $primaryKey []
+     *
+     * @return bool
+     */
+    public function updateMany($id, $params = [], $primaryKey = null)
+    {
+        $primaryKey = !empty($primaryKey) ? $primaryKey : $this->primary_key();
+        return empty($id) || empty($params) ? false : $this->db->update_batch($this->table(), $params, $primaryKey);
+    }
+    
+    /**
+     * Delete record
+     *
+     * @param int $id [id]
+     *
+     * @return bool
+     */
+    public function delete($id)
+    {
+        return empty($id) ? false : $this->db->delete($this->table(), [$this->primary_key() => $id]);
+    }
+
+    /**
+     * Delete multiple records
+     *
+     * @param array $ids [array of IDs]
+     *
+     * @return bool
+     */
+    public function deleteMany($ids = [], $primaryKey = null)
+    {
+        if (!is_array($ids) || empty($ids)) {
+            return false;
+        }
+
+        $primaryKey = !empty($primaryKey) ? $primaryKey : $this->primary_key();
+        $this->db->where_in($primaryKey, $ids);
+        return $this->db->delete($this->table());
+
+        //$sql = "DELETE FROM ".$this->table()." WHERE ".$primaryKey." IN (".implode(',', $ids).")";
+        //return $this->query($sql);
+    }
+
+    /**
      * Get table
      *
      * @return string
      */
-    public static function getTable()
+    public function getTable()
     {
-        return property_exists(get_class(), 'table') ? static::$table : self::plural(get_class());
+        return property_exists(get_class(), 'table') ? $this->table : $this->plural(get_class());
     }
 
     /**
@@ -63,9 +215,33 @@ trait DBHelperTrait
      *
      * @return string
      */
-    public static function table()
+    public function table()
     {
-        return self::getTable();
+        return $this->getTable();
+    }
+
+    /**
+     * Get the primary key of table
+     *
+     * @param bool $id []
+     *
+     * @return string|null
+     */
+    public function primary_key($id = true)
+    {
+        if (property_exists($this, 'primary_key')) {
+            return $this->primary_key;
+        }
+
+        // only get field that it contains primary key from database
+        $field = array_filter($this->db->field_data($this->table()), function ($field) {
+            return $field->primary_key === 1;
+        });
+
+        if (empty($field)) {
+            return $id === true ? 'id' : null;
+        }
+        return $field[0]->name;
     }
 
     /**
@@ -75,7 +251,7 @@ trait DBHelperTrait
      *
      * @return string
      */
-    private static function plural($str)
+    private function plural($str)
     {
         return is_string($str) ? strtolower($str)."s" : '';
     }

@@ -74,12 +74,12 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
+	'dsn'	=> 'mysql:host=localhost;dbname=codeigniter',
 	'hostname' => 'localhost',
 	'username' => 'phich82',
 	'password' => '20091982',
 	'database' => 'codeigniter',
-	'dbdriver' => 'mysqli',
+	'dbdriver' => 'pdo',// 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),

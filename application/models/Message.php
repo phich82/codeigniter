@@ -6,81 +6,41 @@ class Message extends CI_Model
 {
     use DBHelperTrait;
 
-    protected static $table = 'messages';
+    protected $table = 'messages';
+    protected $primary_key = 'id';
 
     /**
-     * __construct
+     * Get messages by date
+     *
+     * @param string $date [date string]
+     *
+     * @return array
+     */
+    public function getMessagesByDate($date)
+    {
+
+    }
+
+    /**
+     * Delete messages
+     *
+     * @param array $ids [array of IDs]
      *
      * @return void
      */
-    public function __construct()
+    public function deleteMessages($ids = [])
     {
-        parent::__construct();
-        
-        $this->load->database();
-    }
-    
-    /**
-     * Get all records
-     *
-     * @return CI_DB_result
-     */
-    public function all()
-    {
-        return $this->db->get(self::$table)->result();
-    }
+        // Note: transaction for only DB Engine is INNODB
+        $this->db->trans_begin();
 
-    /**
-     * Get all records
-     *
-     * @return CI_DB_result
-     */
-    public function getAll()
-    {
-        return $this->all();
-    }
+        $this->deleteMany($ids);
 
-    /**
-     * Find by id
-     *
-     * @param int $id [id]
-     *
-     * @return array
-     */
-    public function find($id)
-    {
-        return $this->db->get_where(self::$table, ['id' => $id])->result();
-    }
-
-    /**
-     * Find by conditions
-     *
-     * @param array $params []
-     *
-     * @return array
-     */
-    public function findBy($params = [])
-    {
-        if (!is_array($params) || empty($params)) {
-            return null;
-        }
-        return $this->db->get_where(self::$table, $params)->result();
-    }
-
-    /**
-     * Execute the sql query
-     *
-     * @param string $sql [sql query]
-     *
-     * @return mixed
-     */
-    public function query($sql)
-    {
-        try {
-            return $this->db->query($sql);
-        } catch (Exception $e) {
-            log_message('error', $e);
+        if ($this->db->trans_status() === false) {
+            $this->db->trans_rollback();
             return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
         }
     }
 }
