@@ -24,7 +24,7 @@ class DatabaseController extends CI_Controller
      */
     public function index()
     {
-        var_dump($this->message->find(1));exit;
+        var_dump($this->message->find(1), $this->message->table());exit;
         $this->load->library('form_validation');
 
         return $this->load->view('database/index');

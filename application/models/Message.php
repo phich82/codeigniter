@@ -1,7 +1,11 @@
 <?php
 
+require_once 'DBHelperTrait.php';
+
 class Message extends CI_Model
 {
+    use DBHelperTrait;
+
     protected static $table = 'messages';
 
     /**
@@ -46,24 +50,6 @@ class Message extends CI_Model
     public function find($id)
     {
         $sql = "SELECT * FROM ".self::$table." WHERE id={$id}";
-        $query = $this->query($sql);
-        return $query !== false ? $query->result() : $query;
-    }
-
-    /**
-     * query
-     *
-     * @param string $sql [sql query]
-     *
-     * @return mixed
-     */
-    public function query($sql)
-    {
-        try {
-            return $this->db->query($sql);
-        } catch (Exception $e) {
-            log_message('error', $e);
-            return false;
-        }
+        return $this->result($sql);
     }
 }
