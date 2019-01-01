@@ -53,6 +53,21 @@ class Message extends CI_Model
     }
 
     /**
+     * Find by conditions
+     *
+     * @param array $params []
+     *
+     * @return array
+     */
+    public function findBy($params = [])
+    {
+        if (!is_array($params) || empty($params)) {
+            return null;
+        }
+        return $this->db->get_where(self::$table, $params)->result();
+    }
+
+    /**
      * Execute the sql query
      *
      * @param string $sql [sql query]

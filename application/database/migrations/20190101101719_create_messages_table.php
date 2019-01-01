@@ -27,6 +27,14 @@ class Migration_create_messages_table extends CI_Migration
                 'constraint' => 255,
                 'null' => true
             ],
+            'date' => [
+                'type' => 'DATE',
+            ],
+            'status' => [
+                'type' => 'SMALLINT',
+                'constraint' => 1,
+                'default' => 0
+            ],
         ]);
         $this->dbforge->add_field("`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         $this->dbforge->add_field("`updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");

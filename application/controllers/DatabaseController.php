@@ -22,7 +22,11 @@ class DatabaseController extends CI_Controller
      */
     public function index()
     {
-        var_dump($this->message->find(1), $this->message->table());exit;
+        $params = [
+            'date < ' => date('Y-m-d'),
+            'id < ' => 10
+        ];
+        var_dump($this->message->findBy($params));exit;
         $this->load->library('form_validation');
 
         return $this->load->view('database/index');
