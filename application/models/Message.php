@@ -49,7 +49,7 @@ class Message extends CI_Model
     }
 
     /**
-     * query
+     * Execute the sql query
      *
      * @param string $sql [sql query]
      *
