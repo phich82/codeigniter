@@ -12,10 +12,17 @@ class ValidationController extends CI_Controller
      */
     public function index()
     {
+        // validate params from request
         new TestValidationRequest();
 
         $this->lang->load('form_validation_lang');
 
         return $this->load->view('validation/index');
+    }
+
+    public function submit()
+    {
+        // validate params from request
+        new TestValidationRequest();
     }
 }

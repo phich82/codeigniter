@@ -3,8 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class DatabaseController extends CI_Controller
 {
-
-    
     /**
      * Constructor
      *

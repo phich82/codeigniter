@@ -41,7 +41,7 @@ class Message extends CI_Model
     }
 
     /**
-     * find by id
+     * Find by id
      *
      * @param int $id [id]
      *
@@ -49,7 +49,23 @@ class Message extends CI_Model
      */
     public function find($id)
     {
-        $sql = "SELECT * FROM ".self::$table." WHERE id={$id}";
-        return $this->result($sql);
+        return $this->db->get_where(self::$table, ['id' => $id])->result();
+    }
+
+    /**
+     * Execute the sql query
+     *
+     * @param string $sql [sql query]
+     *
+     * @return mixed
+     */
+    public function query($sql)
+    {
+        try {
+            return $this->db->query($sql);
+        } catch (Exception $e) {
+            log_message('error', $e);
+            return false;
+        }
     }
 }
