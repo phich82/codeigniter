@@ -53,8 +53,9 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['datatable'] = 'DataTableController/index';
+$route['datatable']  = 'DataTableController/index';
 $route['validation'] = 'ValidationController/index';
 
 $route['database'] = 'DatabaseController/index';
-$route['library'] = 'LibraryController/index';
+$route['grid']     = 'GridController/index';
+$route['library']  = 'LibraryController/index';

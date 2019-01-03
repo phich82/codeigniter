@@ -91,13 +91,14 @@ trait DBHelperTrait
     /**
      * Find by id
      *
-     * @param int $id [id]
+     * @param int    $id        [id]
+     * @param string $primayKey [primary key]
      *
      * @return array
      */
-    public function find($id)
+    public function find($id, $primayKey = null)
     {
-        return $this->db->get_where($this->table(), [$this->primary_key() => $id])->result();
+        return $this->db->get_where($this->table(), [$this->primary_key($primayKey) => $id])->result();
     }
 
     /**
@@ -142,20 +143,21 @@ trait DBHelperTrait
     /**
      * Update record
      *
-     * @param int   $id     [id]
-     * @param array $params []
+     * @param int   $id        []
+     * @param array $params    []
+     * @param array $primayKey []
      *
      * @return bool
      */
-    public function update($id, $params = [])
+    public function update($id, $params = [], $primayKey = null)
     {
-        return empty($id) || empty($params) ? false : $this->db->update($this->table(), $params, [$this->primary_key() => $id]);
+        return empty($id) || empty($params) ? false : $this->db->update($this->table(), $params, [$this->primary_key($primayKey) => $id]);
     }
 
     /**
      * Update multiple records
      *
-     * @param int    $id         [id]
+     * @param int    $id         []
      * @param array  $params     []
      * @param string $primaryKey []
      *
@@ -163,20 +165,20 @@ trait DBHelperTrait
      */
     public function updateMany($id, $params = [], $primaryKey = null)
     {
-        $primaryKey = !empty($primaryKey) ? $primaryKey : $this->primary_key();
-        return empty($id) || empty($params) ? false : $this->db->update_batch($this->table(), $params, $primaryKey);
+        return empty($id) || empty($params) ? false : $this->db->update_batch($this->table(), $params, $this->primary_key($primayKey));
     }
     
     /**
      * Delete record
      *
-     * @param int $id [id]
+     * @param int    $id         []
+     * @param string $primaryKey []
      *
      * @return bool
      */
-    public function delete($id)
+    public function delete($id, $primaryKey = null)
     {
-        return empty($id) ? false : $this->db->delete($this->table(), [$this->primary_key() => $id]);
+        return empty($id) ? false : $this->db->delete($this->table(), [$this->primary_key($primaryKey) => $id]);
     }
 
     /**
@@ -192,8 +194,7 @@ trait DBHelperTrait
             return false;
         }
 
-        $primaryKey = !empty($primaryKey) ? $primaryKey : $this->primary_key();
-        $this->db->where_in($primaryKey, $ids);
+        $this->db->where_in($this->primary_key($primaryKey), $ids);
         return $this->db->delete($this->table());
 
         //$sql = "DELETE FROM ".$this->table()." WHERE ".$primaryKey." IN (".implode(',', $ids).")";
@@ -207,7 +208,7 @@ trait DBHelperTrait
      */
     public function getTable()
     {
-        return property_exists(get_class(), 'table') ? $this->table : $this->plural(get_class());
+        return property_exists(get_class(), 'table') ? $this->table : $this->_plural(get_class());
     }
 
     /**
@@ -233,6 +234,10 @@ trait DBHelperTrait
             return $this->primary_key;
         }
 
+        if (is_string($id) && !empty($id)) {
+            return $id;
+        }
+
         // only get field that it contains primary key from database
         $field = array_filter($this->db->field_data($this->table()), function ($field) {
             return $field->primary_key === 1;
@@ -251,7 +256,7 @@ trait DBHelperTrait
      *
      * @return string
      */
-    private function plural($str)
+    private function _plural($str)
     {
         return is_string($str) ? strtolower($str)."s" : '';
     }
