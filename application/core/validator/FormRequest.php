@@ -10,6 +10,7 @@ class FormRequest extends Validator
 {
     protected $request;
     protected $input;
+    public $error;
 
     /**
      * Constructor.
@@ -21,7 +22,8 @@ class FormRequest extends Validator
         $input = new CI_Input();
         $this->input   = $input;
         $this->request = $input;
-    
+        
+        // validate parameters from request
         $this->_validate();
     }
 
@@ -38,6 +40,10 @@ class FormRequest extends Validator
             $CI->load->library('form_validation');
             // validate form
             $CI->form_validation->set_rules($this->_getRules())->run();
+            // track the error if any
+            if (!empty($error = $CI->form_validation->error_array())) {
+                $this->error = $error;
+            }
         }
     }
 
@@ -93,6 +99,26 @@ class FormRequest extends Validator
             }
         }
         return $messages;
+    }
+
+    /**
+     * Check whether the error has occured
+     *
+     * @return bool
+     */
+    public function hasError()
+    {
+        return !empty($this->error);
+    }
+
+    /**
+     * Get error
+     *
+     * @return array|null
+     */
+    public function error()
+    {
+        return $this->error;
     }
 
     /**
