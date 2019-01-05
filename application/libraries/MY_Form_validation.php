@@ -59,38 +59,25 @@ class MY_Form_validation extends CI_Form_validation
     {
         $params = (new CI_Input())->post();
         $split = explode('.', $field);
-        $flag = false;
-        $check = null;
+
         $checks = [];
         foreach ($split as $key) {
-            if ($check === null) {
+            if (empty($checks)) {
                 if (isset($params[$key])) {
-                    $check = $params[$key];
+                    $checks[] = $params[$key];
                 } else {
-                    $flag = false;
-                    $check = null;
+                    $checks = [];
                     break;
                 }
             } else {
                 if ($key === '*') {
-                    if (empty($checks)) {
-                        foreach ($check as $element) {
-                            $checks[] = $element;
-                        }
-                    } else {
-                        foreach ($checks as $element) {
+                    foreach ($checks as $check) {
 
-                        }
                     }
                 } else {
-
-                }
-                if (!isset($check[$key])) {
-                    $flag = false;
-                    $check = null;
-                    break;
-                } else {
-                    $check = $check[$key];
+                    foreach ($checks as $k => $check) {
+                        $checks[$k] = $check[$key];
+                    }
                 }
             }
         }
