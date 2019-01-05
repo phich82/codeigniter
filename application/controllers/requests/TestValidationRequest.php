@@ -26,7 +26,16 @@ class TestValidationRequest extends FormRequest
             'username' => 'required|min_length[5]|max_length[12]',
             'password' => 'required|min_length[8]',
             'passconf' => 'required|matches[password]',
-            'email'    => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]'
+            'email'    => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]',
+            'levels[]' => 'min_length[5]|max_length[32]|nullable',
+            //'levels[1]' => 'required',
+            //'levels[2]' => 'required',
+            'roles[role]' => 'array[roles.role]|nullable',
+            'roles.*.role.*' => 'array[roles.*]|nullable',
+            'roles[role][0]' => 'bool|nullable',
+            'roles[role][1]' => 'bool|nullable',
+            'roles[role][2]' => 'bool|nullable',
+            'roles[role][3]' => 'bool|nullable',
         ];
     }
 
@@ -39,11 +48,23 @@ class TestValidationRequest extends FormRequest
     {
         return [
             'username' => [
-                'required' => 'Please enter username'
+                'required' => 'Please enter username',
             ],
+            'levels[0]' => [
+                'min_length' => 'min length 5',
+            ],
+            'levels[0].max_length' => 'max length 32',
             'password.required' => 'Please enter password.',
             'passconf.required' => 'Please enter password confirmation.',
-            'email.email' => 'Please enter an valid email.'
+            'email.email' => 'Please enter an valid email.',
+            'roles.array' => 'Role must be an array',
+            'roles[role].array' => 'Role must be an array',
+            'roles[role][0].required' => 'Role is required',
+            'roles[role][].bool' => 'Role is a boolean value',
+            'roles[role][0].bool' => 'Role is a boolean value',
+            'roles[role][1].bool' => 'Role is a boolean value',
+            'roles[role][2].bool' => 'Role is a boolean value',
+            'roles[role][3].bool' => 'Role is a boolean value',
         ];
     }
 

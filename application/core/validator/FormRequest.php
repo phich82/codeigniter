@@ -22,7 +22,6 @@ class FormRequest extends Validator
         $input = new CI_Input();
         $this->input   = $input;
         $this->request = $input;
-        
         // validate parameters from request
         $this->_validate();
     }
@@ -38,6 +37,8 @@ class FormRequest extends Validator
             // load the form_validation library
             $CI =& get_instance();
             $CI->load->library('form_validation');
+            // set delimiter
+            $CI->form_validation->set_error_delimiters(null, null);
             // validate form
             $CI->form_validation->set_rules($this->_getRules())->run();
             // track the error if any

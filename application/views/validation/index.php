@@ -23,6 +23,23 @@
             <?php endif ?>
             <input type="text" name="username" value="<?php echo set_value('username'); ?>" size="50" />
 
+            <h5>Email Address</h5>
+            <?php if (array_key_exists('email', $errors)): ?>
+                <label class="text-danger"><?php echo form_error('email', null, null); ?></label><br>
+            <?php endif ?>
+            <input type="text" name="email" value="<?php echo set_value('email'); ?>" size="50" />
+
+            <h5>Educations</h5>
+            <input type="text" name="levels[]" value="<?php echo set_value('levels[0]'); ?>" />
+            <input type="text" name="levels[]" value="<?php echo set_value('levels[1]'); ?>" style="margin-top: 5px; margin-bottom: 5px;" />
+            <input type="text" name="levels[]" value="<?php echo set_value('levels[2]'); ?>" />
+
+            <h5>Roles</h5>
+            <input type="checkbox" name="roles[role][]" value="1" <?php echo set_value('roles[role][0]') == 1 ? ' checked' : ''; ?> /> Admin<br>
+            <input type="checkbox" name="roles[role][]" value="2" <?php echo set_value('roles[role][1]') == 2 ? ' checked' : ''; ?> /> Manager<br>
+            <input type="checkbox" name="roles[role][]" value="3" <?php echo set_value('roles[role][2]') == 3 ? ' checked' : ''; ?> /> Leader<br>
+            <input type="checkbox" name="roles[role][]" value="4" <?php echo set_value('roles[role][3]') == 4 ? ' checked' : ''; ?> /> Member
+
             <h5>Password</h5>
             <?php if (array_key_exists('password', $errors)): ?>
                 <label class="text-danger"><?php echo form_error('password', null, null); ?></label><br>
@@ -33,12 +50,6 @@
 
             <h5>Password Confirm</h5>
             <input type="text" name="passconf" value="" size="50" />
-
-            <h5>Email Address</h5>
-            <?php if (array_key_exists('email', $errors)): ?>
-                <label class="text-danger"><?php echo form_error('email', null, null); ?></label><br>
-            <?php endif ?>
-            <input type="text" name="email" value="<?php echo set_value('email'); ?>" size="50" />
 
             <div style="margin-top: 10px;">
                 <input class="btn btn-primary" type="submit" value="Submit" />

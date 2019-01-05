@@ -55,15 +55,54 @@ class MY_Form_validation extends CI_Form_validation
      *
      * @return boolean
      */
-    public function array($input)
+    public function array($input, $field = null)
     {
+        $params = (new CI_Input())->post();
+        $split = explode('.', $field);
+        $flag = false;
+        $check = null;
+        $checks = [];
+        foreach ($split as $key) {
+            if ($check === null) {
+                if (isset($params[$key])) {
+                    $check = $params[$key];
+                } else {
+                    $flag = false;
+                    $check = null;
+                    break;
+                }
+            } else {
+                if ($key === '*') {
+                    if (empty($checks)) {
+                        foreach ($check as $element) {
+                            $checks[] = $element;
+                        }
+                    } else {
+                        foreach ($checks as $element) {
+
+                        }
+                    }
+                } else {
+
+                }
+                if (!isset($check[$key])) {
+                    $flag = false;
+                    $check = null;
+                    break;
+                } else {
+                    $check = $check[$key];
+                }
+            }
+        }
+        $flag = is_array($check);
+        var_dump($flag, $check, $params);
         return is_array($input);
     }
 
     /**
      * Validate the input is in an array
      *
-     * @param string $input [input]
+     * @param string $input []
      *
      * @return boolean
      */
@@ -89,5 +128,34 @@ class MY_Form_validation extends CI_Form_validation
             return false;
         }
         return !in_array($input, explode(',', $in));
+    }
+
+    /**
+     * Trim the value
+     *
+     * @param mixed $value []
+     *
+     * @return mixed
+     */
+    public function trim($value)
+    {
+        return trim($value);
+    }
+
+    /**
+     * Accept the null value
+     *
+     * @param mixed $value []
+     *
+     * @return bool
+     */
+    public function nullable($value)
+    {
+        return true;
+    }
+
+    public function bool($value)
+    {
+        return is_bool($value);
     }
 }
