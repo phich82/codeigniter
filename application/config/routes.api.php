@@ -1,4 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$route['api/v1/test']  = 'ApiController/index';
+$suffix = 'api/v1';
+$route[$suffix.'/test']['get']  = 'ApiController/index';

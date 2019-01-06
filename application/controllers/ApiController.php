@@ -11,6 +11,8 @@ class ApiController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+    
+        $this->load->library('Api_service', null, 'apiCustomer');
     }
     
     /**
@@ -20,6 +22,7 @@ class ApiController extends CI_Controller
      */
     public function index()
     {
+        var_dump($this->apiCustomer->getGuzzle('/'));
         echo 'Api router';
     }
 }
