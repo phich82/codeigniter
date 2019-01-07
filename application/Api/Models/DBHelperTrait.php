@@ -34,10 +34,8 @@ trait DBHelperTrait
         try {
             return $this->db->query($sql);
         } catch (Exception $e) {
+            log_message('error', 'Sql query: '.$sql);
             log_message('error', $e);
-            if (function_exists('report')) {
-                report($e);
-            }
             return false;
         }
     }
