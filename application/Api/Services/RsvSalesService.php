@@ -5,8 +5,14 @@
  */
 namespace App\Api\Services;
 
+use App\Api\Traits\FactoryTrait;
+
+require_once APPPATH.'Api/Traits/FactoryTrait.php';
+
 class RsvSalesService
 {
+    use FactoryTrait;
+
     /**
      * @var Rsv_sale
      */
@@ -19,9 +25,7 @@ class RsvSalesService
      */
     public function __construct()
     {
-        $CI =& get_instance();
-        $CI->load->library('rsv_sale');
-        $this->apiRsvSale = $CI->rsv_sale;
+        $this->apiRsvSale = $this->make('rsv_sale');
     }
     
     /**

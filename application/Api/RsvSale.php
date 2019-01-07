@@ -7,9 +7,11 @@ namespace App\Api;
 
 require_once APPPATH.'helpers/constant.php';
 require_once APPPATH.'Api/Contracts/RsvSaleContract.php';
+require_once APPPATH.'Api/Exceptions/RsvSalesException.php';
 
 use GuzzleHttp\Client;
 use App\Api\Contracts\RsvSaleContract;
+use App\Api\Exceptions\RsvSalesException;
 
 class RsvSale implements RsvSaleContract
 {
@@ -71,7 +73,7 @@ class RsvSale implements RsvSaleContract
         if (400 <= $statusCode = $response->getStatusCode()) {
             log_message('error', 'API Response: ' . $statusCode . PHP_EOL . $body);
 
-            throw new RsvSaleException($statusCode, $path, $result->common->error_code ?? null);
+            throw new RsvSalesException($statusCode, $path, $result->common->error_code ?? null);
         }
 
         return $result;
