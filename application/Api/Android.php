@@ -1,11 +1,14 @@
 <?php
-
+/**
+ * @author Huynh Phat <phat.nguyen@gmail.com>
+ * @license http://localhost:8282/api/v1/android [v1]
+ */
 namespace App\Api;
 
 use GuzzleHttp\Client;
-use application\Api\Contracts\VipApiContract;
+use application\Api\Contracts\AndroidContract;
 
-class Vip implements VipApiContract
+class Android implements AndroidContract
 {
     /**
      * @var Client
@@ -18,9 +21,9 @@ class Vip implements VipApiContract
     protected $config;
 
     /**
-     * Ana constructor.
+     * Constructor
      *
-     * @param array $config
+     * @param array $config []
      */
     public function __construct($config)
     {
@@ -45,19 +48,19 @@ class Vip implements VipApiContract
     /**
      * Redirect to login page
      *
-     * @param string $urlFail
-     * @param string $urlOk
-     * @return \Illuminate\Http\RedirectResponse
+     * @param string $urlFail []
+     * @param string $urlOk   []
+     * @return void
      */
     public function login($urlFail = null, $urlOk = null)
     {
         $url = $this->config['base_uri'] . 'login_cooperation/psgwLoginJa.jsp';
 
         $authUrl = $url . '?' . http_build_query([
-                'ssoProduct' => $this->config['sso_product'],
-                'url-ok' => $urlOk ?: url($this->config['url_ok']),
-                'url-fail' => $urlFail ?: url($this->config['url_fail']),
-            ]);
+            'ssoProduct' => $this->config['sso_product'],
+            'url-ok'     => $urlOk   ?: url($this->config['url_ok']),
+            'url-fail'   => $urlFail ?: url($this->config['url_fail']),
+        ]);
 
         return redirect($authUrl);
     }

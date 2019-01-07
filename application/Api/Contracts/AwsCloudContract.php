@@ -1,7 +1,7 @@
 <?php
-namespace application\Api\Contracts;
+namespace App\Api\Contracts;
 
-interface ReservationApiContract
+interface AwsCloudContract
 {
     public function createReservation();
     public function updateReservation();

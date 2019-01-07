@@ -1,6 +1,6 @@
 <?php
 $config = ($config ?? []) + [
-    'customer' => [
+    'rsv_sale' => [
         'base_uri' => 'https://api.github.com', //env('API_BASE_URI'),
         'common' => [
             'client_id' => '', //env('API_CLIENT_ID'),
@@ -8,7 +8,7 @@ $config = ($config ?? []) + [
             'language_code' => 'jp',
         ],
     ],
-    'vip' => [
+    'android' => [
         'base_uri' => 'http://httpbin.org', //env('ANA_BASE_URI'),
         'url_ok' => '', //'ana/login/callback',
         'url_fail' => '', //'ana/login/callback',

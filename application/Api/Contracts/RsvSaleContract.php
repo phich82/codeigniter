@@ -1,7 +1,7 @@
 <?php
-namespace application\Api\Contracts;
+namespace App\Api\Contracts;
 
-interface ApiBaseContract
+interface RsvSaleContract
 {
     public function request($path, $params = []);
     public function requestCache($path, $params = [], $keyCache = null);

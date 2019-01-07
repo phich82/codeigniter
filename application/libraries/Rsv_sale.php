@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-use application\Api\ApiBase;
+use App\Api\RsvSale;
 
-require_once APPPATH.'Api/Api.php';
+require_once APPPATH.'Api/RsvSale.php';
 
-class Api extends ApiBase
+class Rsv_sale extends RsvSale
 {
     /**
      * Constructor.
@@ -17,6 +17,6 @@ class Api extends ApiBase
         $CI =& get_instance();
         $CI->load->driver('cache');
 
-        parent::__construct($CI->config->item('customer'), $CI->cache);
+        parent::__construct($CI->config->item('rsv_sale'), $CI->cache);
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace application\Api\Contracts;
+namespace App\Api\Contracts;
 
-interface CustomerApiContract
+interface RsvCloudContract
 {
     public function createReservation();
     public function updateReservation();

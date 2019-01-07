@@ -1,7 +1,7 @@
 <?php
-namespace application\Api\Contracts;
+namespace App\Api\Contracts;
 
-interface VipApiContract
+interface AndroidContract
 {
     public function login($urlFail = null, $urlOk = null);
 }

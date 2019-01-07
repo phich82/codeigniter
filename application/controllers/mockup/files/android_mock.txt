@@ -1,0 +1,11 @@
+1234567890|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|1020000|D|E|20180712045346
+1234567891|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|1010000|P|E|20180712045346
+1234567892|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|1010000|B|E|20180712045346
+1234567893|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|1040000|S|E|20180712045346
+1234567894|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|140000|ACH|E|20180712045346
+1234567895|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|300000|AID|E|20180712045346
+1234567999|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|200000|D|E|20180712045346
+1234567401|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|10|D|E|20180712045346
+1234567301|X|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|10000000|D|E|20180712045346
+1234567201|C|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|10000000|D|E|20180712045346
+1234567101|A|空野|太郎|taro|sorano|ソラノ|タロウ|20180416|F|1234567|東京都|sorano@anasystems.co.jp|WID|GLD|CA|10000000|D|E|20180712045346

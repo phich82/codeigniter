@@ -59,3 +59,7 @@ $route['validation'] = 'ValidationController/index';
 $route['database'] = 'DatabaseController/index';
 $route['grid']     = 'GridController/index';
 $route['library']  = 'LibraryController/index';
+
+$route['login_cooperation/psgwLoginJa.jsp']['get']  = 'AndroidMockupController/androidLogin';
+$route['login_cooperation/psgwLoginJa.jsp']['post'] = 'AndroidMockupController/androidLogin';
+$route['android_callback']['post']                  = 'AndroidMockupController/androidCallback';

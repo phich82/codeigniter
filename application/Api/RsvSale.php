@@ -1,14 +1,17 @@
 <?php
-namespace application\Api;
+/**
+ * @author Huynh Phat <phat.nguyen@gmail.com>
+ * @license http://localhost:8282/api/v1/android [v1]
+ */
+namespace App\Api;
 
 require_once APPPATH.'helpers/constant.php';
-require_once APPPATH.'Api/Contracts/ApiBaseContract.php';
+require_once APPPATH.'Api/Contracts/RsvSaleContract.php';
 
 use GuzzleHttp\Client;
-use application\Api\Exceptions\CustomerException;
-use application\Api\Contracts\ApiBaseContract;
+use App\Api\Contracts\RsvSaleContract;
 
-class ApiBase implements ApiBaseContract
+class RsvSale implements RsvSaleContract
 {
     /**
      * @var Client
@@ -68,7 +71,7 @@ class ApiBase implements ApiBaseContract
         if (400 <= $statusCode = $response->getStatusCode()) {
             log_message('error', 'API Response: ' . $statusCode . PHP_EOL . $body);
 
-            throw new CustomerException($statusCode, $path, $result->common->error_code ?? null);
+            throw new RsvSaleException($statusCode, $path, $result->common->error_code ?? null);
         }
 
         return $result;
