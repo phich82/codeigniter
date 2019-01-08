@@ -12,6 +12,7 @@ require_once APPPATH.'Api/Exceptions/RsvSalesException.php';
 use GuzzleHttp\Client;
 use App\Api\Contracts\RsvSaleContract;
 use App\Api\Exceptions\RsvSalesException;
+use function GuzzleHttp\json_decode;
 
 class RsvSale implements RsvSaleContract
 {
@@ -38,7 +39,7 @@ class RsvSale implements RsvSaleContract
     public function __construct($config, $cache = null)
     {
         $this->client = new Client([
-            'base_uri' => $config['base_uri'],
+            'base_uri' => 'https://jsonplaceholder.typicode.com/posts',//$config['base_uri'],
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
@@ -117,7 +118,7 @@ class RsvSale implements RsvSaleContract
     public function get($path)
     {
         $response = $this->client->get($path);
-        return json_encode($response->getBody());
+        return json_decode($response->getBody(), true);
     }
 
     /**
@@ -131,7 +132,7 @@ class RsvSale implements RsvSaleContract
         $params = array_merge($this->params, $params);
         log_message('debug', 'API Request: ' . $path . PHP_EOL . json_encode($params));
         $response = $this->client->post($path, ['json' => $params]);
-        return json_encode($response->getBody());
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**

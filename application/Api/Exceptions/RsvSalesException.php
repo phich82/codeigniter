@@ -5,6 +5,8 @@
  */
 namespace App\Api\Exceptions;
 
+use Exception;
+
 require_once APPPATH.'helpers/constant.php';
 
 //use Symfony\Component\HttpKernel\Exception\HttpException;

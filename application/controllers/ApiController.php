@@ -22,7 +22,8 @@ class ApiController extends CI_Controller
      */
     public function index()
     {
-        var_dump($this->apiRsvSalesService->getGuzzle('/'));
-        echo 'Api router';
+        $result = $this->apiRsvSalesService->getGuzzle('');
+        var_dump($result);
+        //echo 'Api router';
     }
 }
