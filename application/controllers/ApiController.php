@@ -26,7 +26,7 @@ class ApiController extends CI_Controller
         echo json_encode($result);
     }
 
-    public function posts($id)
+    public function posts($id = null)
     {
         echo json_encode(['id' => $id]);
     }
