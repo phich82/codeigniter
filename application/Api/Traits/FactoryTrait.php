@@ -36,4 +36,20 @@ trait FactoryTrait
     {
         return $this->make($library, $params, $alias);
     }
+
+    /**
+     * __call
+     *
+     * @param string $type      []
+     * @param array  $arguments []
+     *
+     * @return void
+     */
+    public function __call($type, $arguments)
+    {
+        $CI =& get_instance();
+        $CI->load->{$type}(...$arguments);
+        $model = count($arguments) === 2 ? $arguments[1] : $arguments[0];
+        return $CI->{$model};
+    }
 }

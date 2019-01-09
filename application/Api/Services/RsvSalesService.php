@@ -5,9 +5,9 @@
  */
 namespace App\Api\Services;
 
-use App\Api\Traits\FactoryTrait;
+require_once APPPATH."Api/Traits/FactoryTrait.php";
 
-require_once APPPATH.'Api/Traits/FactoryTrait.php';
+use App\Api\Traits\FactoryTrait;
 
 class RsvSalesService
 {

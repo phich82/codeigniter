@@ -30,6 +30,7 @@ class TestValidationRequest extends FormRequest
             'levels[]' => 'min_length[5]|max_length[32]|nullable',
             //'levels[1]' => 'required',
             //'levels[2]' => 'required',
+            'roles' => 'array|nullable',
             'roles[role]' => 'array[roles.role]|nullable',
             'roles.*.role.*' => 'array[roles.*]|nullable',
             'roles[role][0]' => 'bool|nullable',

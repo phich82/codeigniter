@@ -6,10 +6,7 @@
 namespace App\Api\Exceptions;
 
 use Exception;
-
-require_once APPPATH.'helpers/constant.php';
-
-//use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Api\Helpers\Constant;
 
 class RsvSalesException extends Exception //HttpException
 {

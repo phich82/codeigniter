@@ -5,9 +5,10 @@
  */
 namespace App\Api\Exceptions;
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+use Exception;
+use App\Api\Helpers\Constant;
 
-//use Symfony\Component\HttpKernel\Exception\HttpException;
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class AndroidException extends Exception //HttpException
 {

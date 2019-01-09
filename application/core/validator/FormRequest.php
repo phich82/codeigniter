@@ -60,14 +60,65 @@ class FormRequest extends Validator
 
         $config = [];
         foreach ($this->rules() as $field => $rules) {
-            $config[] = [
-                'field'  => $field,
-                'label'  => array_key_exists($field, $attributes) ? $attributes[$field] : null,
-                'rules'  => $rules,
-                'errors' => array_key_exists($field, $messages) ? $messages[$field] : []
-            ];
+            if (strpos($field, '.') === false) {
+                $config[] = [
+                    'field'  => $field,
+                    'label'  => array_key_exists($field, $attributes) ? $attributes[$field] : null,
+                    'rules'  => $rules,
+                    'errors' => array_key_exists($field, $messages) ? $messages[$field] : []
+                ];
+            } else {
+                $fields = $this->_getNestedArrayFields($field);
+                foreach ($fields as $nestedField) {
+                    $config[] = [
+                        'field'  => $nestedField,
+                        'label'  => array_key_exists($nestedField, $attributes) ? $attributes[$nestedField] : null,
+                        'rules'  => $rules,
+                        'errors' => array_key_exists($nestedField, $messages) ? $messages[$nestedField] : []
+                    ];
+                }
+            }
         }
         return $config;
+    }
+
+    /**
+     * Get the nested array rules: ['colors.4.color.*' => 'array']
+     *
+     * @param string $field  []
+     * @param array  $params []
+     *
+     * @return array
+     */
+    private function _getNestedArrayFields($field, $params = [])
+    {
+        $params = !empty($params) ? $params : $this->input->get();
+        $parts  = explode('.', $field);
+        $firstElement = array_shift($parts);
+        $rules = [$firstElement];
+        $currentValue = $params[$firstElement];
+    
+        foreach ($parts as $part) {
+            if ($part == '*') {
+                $totalElements = count($currentValue);
+                $currentValue  = $currentValue[0];
+                $temp = [];
+                for ($s=0; $s < $totalElements; $s++) {
+                    foreach ($rules as $k => $rule) {
+                        $temp[] = $rule."[".$s."]";
+                    }
+                }
+                $rules = $temp;
+            } else {
+                $currentValue = $currentValue[$part];
+                $temp = [];
+                foreach ($rules as $k => $rule) {
+                    $temp[] = $rule."[".$part."]";
+                }
+                $rules = $temp;
+            }
+        }
+        return $rules;
     }
 
     /**

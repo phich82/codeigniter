@@ -39,7 +39,7 @@ class RsvSale implements RsvSaleContract
     public function __construct($config, $cache = null)
     {
         $this->client = new Client([
-            'base_uri' => 'https://jsonplaceholder.typicode.com/posts',//$config['base_uri'],
+            'base_uri' => 'https://jsonplaceholder.typicode.com',//$config['base_uri'],
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
