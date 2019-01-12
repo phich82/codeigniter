@@ -2,10 +2,9 @@
 <head>
     <title>Database Basic</title>
 
-    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" href="/assets/css/lib/bootstrap.min.css">
+    <?php echo asset('assets/css/lib/bootstrap.min.css', true); ?>
 </head>
 <body>
     <div class="container">
@@ -49,6 +48,6 @@
         </form>
     </div>
 </body>
-<script src="/assets/js/lib/jquery-3.3.1.min.js"></script>
-<script src="/assets/js/lib/bootstrap.min.js"></script>
+<script src="<?php echo asset('js/lib/jquery-3.3.1.min.js'); ?>"></script>
+<script src="<?php echo asset('js/lib/bootstrap.min.js'); ?>"></script>
 </html>

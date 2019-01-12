@@ -2,6 +2,8 @@
 <head>
     <title>Libraries Basic</title>
 
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="/assets/css/lib/bootstrap.min.css">
 </head>
 <body>

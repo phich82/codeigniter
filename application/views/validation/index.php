@@ -2,7 +2,9 @@
 <head>
     <title>Form Validation</title>
 
-    <link rel="stylesheet" href="/assets/css/lib/bootstrap.min.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="<?php echo asset('css/lib/bootstrap.min.css'); ?>">
 </head>
 <body>
     <div class="container">
@@ -57,6 +59,6 @@
         </form>
     </div>
 </body>
-<script src="/assets/js/lib/jquery-3.3.1.min.js"></script>
-<script src="/assets/js/lib/bootstrap.min.js"></script>
+<script src="<?php echo asset('js/lib/jquery-3.3.1.min.js'); ?>"></script>
+<script src="<?php echo asset('assets/js/lib/bootstrap.min.js'); ?>"></script>
 </html>

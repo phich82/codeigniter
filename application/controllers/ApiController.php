@@ -22,12 +22,15 @@ class ApiController extends CI_Controller
      */
     public function index()
     {
-        $result = $this->apiRsvSalesService->getGuzzle('/posts');
-        echo json_encode($result);
+        $di = load_class('DI', 'Api/Ioc');
+        echo json_encode($di->test());
+        //$result = $this->apiRsvSalesService->getGuzzle('/posts');
+        //echo json_encode($result);
     }
 
     public function posts($id = null)
     {
-        echo json_encode(['id' => $id]);
+        
+        //echo json_encode(['id' => $id]);
     }
 }

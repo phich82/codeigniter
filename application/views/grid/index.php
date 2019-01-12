@@ -3,8 +3,10 @@
 <head>
     <title>Grid & InteractJS</title>
 
-    <link rel="stylesheet" href="/assets/css/lib/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/lib/jquery.dataTables.min.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <?php echo asset('css/lib/bootstrap.min.css', true); ?>
+    <?php echo asset('css/lib/jquery.dataTables.min.css', true) ?>
     
     <style>
         .rowbar {
@@ -42,10 +44,10 @@
         </tbody>
     </table>
 </body>
-<script src="/assets/js/lib/jquery-3.3.1.min.js"></script>
-<script src="/assets/js/lib/bootstrap.min.js"></script>
-<script src="/assets/js/lib/jquery.dataTables.min.js"></script>
-<script src="/assets/js/lib/interact.js"></script>
+<script src="<?php echo asset('js/lib/jquery-3.3.1.min.js'); ?>"></script>
+<script src="<?php echo asset('assets/js/lib/bootstrap.min.js'); ?>"></script>
+<script src="<?php echo asset('assets/js/lib/jquery.dataTables.min.js'); ?>"></script>
+<script src="<?php echo asset('assets/js/lib/interact.js'); ?>"></script>
 <script>
     // $('#datatable').DataTable({
     //     scrollY:        "500px",

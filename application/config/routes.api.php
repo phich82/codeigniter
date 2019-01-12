@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$suffix = 'api/v1';
-$route[$suffix.'/test']  = 'ApiController/index';
-$route[$suffix.'/orders/(:id)']['post']  = 'ApiController/posts/$1';
+$prefix = 'api/v1';
+$route[$prefix.'/test']  = 'ApiController/index';
+$route[$prefix.'/orders/(:id)']['post']  = 'ApiController/posts/$1';
