@@ -10,8 +10,18 @@ class DataTableController extends CI_Controller {
      */
     public function index()
     {
-        $data = $this->_mockData(10000);
+        $data = [];// $this->_mockData(10000);
         $this->load->view('datatable/index', compact('data'));
+    }
+
+    public function all()
+    {
+        echo json_encode([
+            "draw"            => 5,  
+            "recordsTotal"    => 100000,
+            "recordsFiltered" => 100000,
+            'data' => $this->_mockData(100000)
+        ]);
     }
 
     /**

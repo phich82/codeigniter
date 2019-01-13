@@ -1,0 +1,5 @@
+- List all emulator
+	emulator -list-avds
+- Start an emulator
+	emulator -avd [emulator_name]
+	emulator -avd Nexus_5X_API_23 [-netdelay] [none] [-netspeed] []full

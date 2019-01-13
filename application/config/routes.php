@@ -57,6 +57,7 @@ $route['datatable']  = 'DataTableController/index';
 $route['validation'] = 'ValidationController/index';
 
 $route['database'] = 'DatabaseController/index';
+$route['datatable/all']['post'] = 'DataTableController/all';
 $route['grid']     = 'GridController/index';
 $route['library']  = 'LibraryController/index';
 

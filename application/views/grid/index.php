@@ -45,9 +45,9 @@
     </table>
 </body>
 <script src="<?php echo asset('js/lib/jquery-3.3.1.min.js'); ?>"></script>
-<script src="<?php echo asset('assets/js/lib/bootstrap.min.js'); ?>"></script>
-<script src="<?php echo asset('assets/js/lib/jquery.dataTables.min.js'); ?>"></script>
-<script src="<?php echo asset('assets/js/lib/interact.js'); ?>"></script>
+<script src="<?php echo asset('js/lib/bootstrap.min.js'); ?>"></script>
+<script src="<?php echo asset('js/lib/jquery.dataTables.min.js'); ?>"></script>
+<script src="<?php echo asset('js/lib/interact.js'); ?>"></script>
 <script>
     // $('#datatable').DataTable({
     //     scrollY:        "500px",
@@ -79,9 +79,9 @@
                 endOnly: true,
             },
             // minimum size
-            restrictSize: {
-                min: { width: 150 },
-            },
+            // restrictSize: {
+            //     min: { width: 150 },
+            // },
             inertia: true,
         })
         .on('resizemove', function (event) {
@@ -93,14 +93,14 @@
 
             // keep the dragged position in the data-x/data-y attributes
             //var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-            var y = 0;
+            //var y = 0;
             //var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
             // translate the element
-            target.style.webkitTransform = target.style.transform = 'translate(' + event.rect.width + 'px, ' + y + 'px)';
+            target.style.webkitTransform = target.style.transform = 'scaleX(' + event.rect.width + ')';
 
             // update the posiion attributes
-            target.setAttribute('data-x', x);
+            //target.setAttribute('data-x', x);
         })
         .on('tap', function (event) {
             var currentTarget = event.currentTarget;

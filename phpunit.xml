@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit
-	bootstrap="./Bootstrap.php"
+	bootstrap="./tests/Bootstrap.php"
 	colors="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
@@ -10,17 +10,17 @@
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
     verbose="true">
-	<testsuites>
-		<testsuite name="Web Test Suite">
+    <testsuites>
+        <testsuite name="web">
 			<directory>tests/automation/web</directory>
 		</testsuite>
-        <testsuite name="Mobile Test Suite">
+        <testsuite name="mobile">
 			<directory>tests/automation/mobile</directory>
 		</testsuite>
-		<testsuite name="Android Test Suite">
+		<testsuite name="android">
 			<directory>tests/automation/mobile/android</directory>
 		</testsuite>
-        <testsuite name="IOS Test Suite">
+        <testsuite name="ios">
 			<directory>tests/automation/mobile/ios</directory>
 		</testsuite>
 	</testsuites>

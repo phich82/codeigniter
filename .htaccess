@@ -1,3 +1,7 @@
+<IfModule mod_rewrite.c> 
+    php_value memory_limit 1024M 
+</IfModule>
+
 Options +FollowSymLinks
 Options -Indexes
 DirectoryIndex index.php
@@ -6,3 +10,4 @@ RewriteCond $1 !^(index\.php|images|robots\.txt)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+

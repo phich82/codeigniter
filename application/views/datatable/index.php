@@ -35,13 +35,14 @@
 
     <table id="datatable">
         <thead>
+            <th></th>
             <th>Name</th>
             <th>Age</th>
             <th>Seat</th>
         </thead>
-        <tbody>
-            <?php $this->load->view('datatable/partials/_list'); ?>
-        </tbody>
+        <!-- <tbody>
+            <x?php $this->load->view('datatable/partials/_list'); ?>
+        </tbody> -->
     </table>
 </body>
 <script src="<?php echo asset('js/lib/jquery-3.3.1.min.js'); ?>"></script>
@@ -49,6 +50,26 @@
 <script src="<?php echo asset('js/lib/jquery.dataTables.min.js'); ?>"></script>
 <script src="<?php echo asset('js/lib/interact.js'); ?>"></script>
 <script>
+    $('#datatable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+            "url": "<?php echo base_url('datatable/all') ?>",
+            "dataType": "json",
+            "type": "POST",
+            "data":{
+                '<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>'
+            }
+        },
+        "columns": [
+            { "data": "id" },
+            { "data": "name" },
+            { "data": "age" },
+            { "data": "seat" },
+        ]	 
+
+    });
+    /*
     $('#datatable').DataTable({
         scrollY:        "500px",
         scrollCollapse: true,
@@ -141,5 +162,6 @@
     function dragend(event) {
         console.log('dragend');
     }
+    */
 </script>
 </html>
