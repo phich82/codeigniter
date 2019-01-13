@@ -92,16 +92,22 @@ class FormRequest extends Validator
      */
     private function _getNestedArrayFields($field, $params = [])
     {
-        $params = !empty($params) ? $params : $this->input->get();
+        $params = !empty($params) ? $params : array_merge($this->input->post(), $this->input->get());
         $parts  = explode('.', $field);
         $firstElement = array_shift($parts);
         $rules = [$firstElement];
+
+        // for case, inputs are checkboxes
+        if (!array_key_exists($firstElement, $params)) {
+            return [];
+        }
+
         $currentValue = $params[$firstElement];
     
         foreach ($parts as $part) {
             if ($part == '*') {
                 $totalElements = count($currentValue);
-                $currentValue  = $currentValue[0];
+                $currentValue  = $currentValue[array_keys($currentValue)[0]];
                 $temp = [];
                 for ($s=0; $s < $totalElements; $s++) {
                     foreach ($rules as $k => $rule) {
@@ -132,22 +138,39 @@ class FormRequest extends Validator
         $messages = [];
         $dot = '.';
         foreach ($this->messages() as $field_rule => $message) {
-            if (is_array($message)) {
-                if (strpos($field_rule, $dot) !== false) {
+            // in case the fields are not nested
+            if (substr_count($field_rule, $dot) < 2) {
+                if (is_array($message) && strpos($field_rule, $dot) === false) {
+                    $messages[$field_rule] = $message;
+                } elseif (is_string($message) && strpos($field_rule, $dot) !== false) {
+                    $fieldRule = explode($dot, $field_rule);
+                    if (count($fieldRule) !== 2) {
+                        $this->_throwError($field_rule);
+                    }
+                    $messages[$fieldRule[0]][$fieldRule[1]] = $message;
+                } else {
                     $this->_throwError($field_rule);
                 }
-                $messages[$field_rule] = $message;
-            } elseif (is_string($message)) {
-                if (strpos($field_rule, $dot) === false) {
+            } else { // in case the nested fields
+                $parts = explode($dot, $field_rule);
+                $rule = array_pop($parts);
+
+                // missing the rule
+                if (in_array($rule, ['.', '*'])) {
                     $this->_throwError($field_rule);
                 }
-                $fieldRule = explode($dot, $field_rule);
-                if (count($fieldRule) !== 2) {
-                    $this->_throwError($field_rule);
+
+                $nestedFields = $this->_getNestedArrayFields(implode($dot, $parts));
+
+                foreach ($nestedFields as $nestedField) {
+                    if (is_array($message)) {
+                        $messages[$nestedField] = $message;
+                    } elseif (is_string($message)) {
+                        $messages[$nestedField][$rule] = $message;
+                    } else {
+                        $this->_throwError($field_rule);
+                    }
                 }
-                $messages[$fieldRule[0]][$fieldRule[1]] = $message;
-            } else {
-                $this->_throwError($field_rule);
             }
         }
         return $messages;
@@ -183,6 +206,6 @@ class FormRequest extends Validator
      */
     private function _throwError($field)
     {
-        throw new Exception("Field [$field] is not correct.");
+        throw new Exception("Field [$field] is invalid.");
     }
 }

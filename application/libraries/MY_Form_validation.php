@@ -1,4 +1,6 @@
 <?php
+
+use PHPUnit\Framework\Constraint\Exception;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -29,10 +31,10 @@ class MY_Form_validation extends CI_Form_validation
      *
      * @return boolean
      */
-    public function is_email($email)
+    public function email($email)
     {
         // define message for this rule here or set message in lang file (form_validation_lang.php)
-        // $this->CI->form_validation->set_message('is_email', 'The %s is not valid.');
+        // $this->CI->form_validation->set_message('email', 'The %s is not valid.');
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
@@ -57,33 +59,67 @@ class MY_Form_validation extends CI_Form_validation
      */
     public function array($input, $field = null)
     {
-        $params = (new CI_Input())->post();
-        $split = explode('.', $field);
+        $params = array_merge($this->CI->input->post(), $this->CI->input->get());
 
-        $checks = [];
-        foreach ($split as $key) {
-            if (empty($checks)) {
-                if (isset($params[$key])) {
-                    $checks[] = $params[$key];
-                } else {
-                    $checks = [];
-                    break;
+        if (is_null($field)) {
+            throw new Exception('The array rule is required an argument.');
+        }
+
+        $parts  = explode('.', $field);
+
+        // in case the field is not nested
+        if (count($parts) === 1) {
+            return array_key_exist($field, $params) && is_array($params[$field]);
+        }
+        
+        $firstElement = array_shift($parts);
+        $valuesCheck  = [$firstElement => $params[$firstElement]];
+
+        // in case, inputs are checkboxes or radios
+        if (!array_key_exists($firstElement, $params)) {
+            return false;
+        }
+
+        $currentValue = $params[$firstElement];
+    
+        foreach ($parts as $k => $part) {
+            if ($part == '*') {
+                $totalElements = count($currentValue);
+                $currentValue  = $currentValue[array_keys($currentValue)[0]];
+                $temp = [];
+                for ($s=0; $s < $totalElements; $s++) {
+                    foreach ($valuesCheck as $rule => $value) {
+                        $temp[$rule."[".$s."]"] = $value[$s];
+                        // if it is the last element, check whether it is an array
+                        if (count($parts) === ($k + 1) && !is_array($value[$s])) {
+                            return false;
+                        }
+                    }
                 }
+                $valuesCheck = $temp;
             } else {
-                if ($key === '*') {
-                    foreach ($checks as $check) {
-
-                    }
-                } else {
-                    foreach ($checks as $k => $check) {
-                        $checks[$k] = $check[$key];
+                $currentValue = $currentValue[$part];
+                $temp = [];
+                foreach ($valuesCheck as $rule => $value) {
+                    $temp[$rule."['".$part."']"] = $value[$part];
+                    // if it is the last element, check whether it is an array
+                    if (count($parts) === ($k + 1) && !is_array($value[$part])) {
+                        return false;
                     }
                 }
+                $valuesCheck = $temp;
             }
         }
-        $flag = is_array($check);
-        var_dump($flag, $check, $params);
-        return is_array($input);
+
+        return true;
+
+        // $errors = [];
+        // foreach ($valuesCheck as $rule => $valueCheck) {
+        //     if (!is_array($valueCheck)) {
+        //         $errors[] = $rule;
+        //     }
+        // }
+        // return count($errors) === 0;
     }
 
     /**
@@ -141,8 +177,14 @@ class MY_Form_validation extends CI_Form_validation
         return true;
     }
 
-    public function bool($value)
+    public function bool($value, $typeInput = null)
     {
-        return is_bool($value);
+        switch (strtolower($typeInput)) {
+            case 'checkbox':
+            case 'radio':
+                return is_null($value) || $value === 'on';
+            default:
+                return is_bool($value);
+        }
     }
 }

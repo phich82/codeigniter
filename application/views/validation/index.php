@@ -42,6 +42,12 @@
             <input type="checkbox" name="roles[role][]" value="3" <?php echo set_value('roles[role][2]') == 3 ? ' checked' : ''; ?> /> Leader<br>
             <input type="checkbox" name="roles[role][]" value="4" <?php echo set_value('roles[role][3]') == 4 ? ' checked' : ''; ?> /> Member
 
+            <h5>Colors</h5>
+            <input type="radio" name="colors[]" value="1" <?php echo set_value('colors[0]') == 1 ? ' checked' : ''; ?> /> Blue<br>
+            <input type="radio" name="colors[]" value="2" <?php echo set_value('colors[1]') == 2 ? ' checked' : ''; ?> /> Red<br>
+            <input type="radio" name="colors[]" value="3" <?php echo set_value('colors[2]') == 3 ? ' checked' : ''; ?> /> Yellow<br>
+            <input type="radio" name="colors[]" value="" /> Organe
+
             <h5>Password</h5>
             <?php if (array_key_exists('password', $errors)): ?>
                 <label class="text-danger"><?php echo form_error('password', null, null); ?></label><br>
@@ -60,5 +66,5 @@
     </div>
 </body>
 <script src="<?php echo asset('js/lib/jquery-3.3.1.min.js'); ?>"></script>
-<script src="<?php echo asset('assets/js/lib/bootstrap.min.js'); ?>"></script>
+<script src="<?php echo asset('js/lib/bootstrap.min.js'); ?>"></script>
 </html>
