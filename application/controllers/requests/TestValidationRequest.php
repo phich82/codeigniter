@@ -23,15 +23,15 @@ class TestValidationRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|min_length[5]|max_length[12]',
-            'password' => 'required|min_length[8]',
-            'passconf' => 'required|matches[password]',
-            'email'    => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]',
-            'levels[]' => 'min_length[5]|max_length[32]|nullable',
-            'roles' => 'array[roles]|nullable',
-            'roles[role]' => 'array[roles.role]|nullable',
+            'username'     => 'required|min_length[5]|max_length[12]',
+            'password'     => 'required|min_length[8]',
+            'passconf'     => 'required|matches[password]',
+            'email'        => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]',
+            'levels[]'     => 'min_length[5]|max_length[32]|nullable',
+            'roles'        => 'array[roles]|nullable',
+            'roles[role]'  => 'array[roles.role:min[1]:max[3]:size[2]]|nullable',
             'roles.role.*' => 'bool[checkbox]|nullable',
-            'colors.*' => 'bool[radio]|nullable',
+            'colors.*'     => 'bool[radio]|nullable',
         ];
     }
 
