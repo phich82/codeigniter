@@ -1,0 +1,21 @@
+Using ngrok to expose local web server to internet
+
+1. Tunneling to a Virtual host
+	c:\ngrok.exe  http -host-header=<domain_name_in_vhost_file_apache> 80
+	c:\ngrok.exe  http -host-header=<my-local-domain.local> 80
+
+2. Running multiple tunnels at once
+	- Create a file 'ngrok.yml' with below content:
+
+	tunnels:
+  	  completely-arbitrary:
+    	    addr: 80
+    	    proto: http
+    	    host_header: awesome-webapp.local  
+  	  next-facebook:
+    	    addr: 80
+    	    proto: http
+    	    host_header: next-facebook.local  
+    	    auth: "demo:secret"
+
+	- Run: ngrok start completely-arbitrary next-facebook

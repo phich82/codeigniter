@@ -39,4 +39,14 @@ class RsvSalesService
     {
         return $this->apiRsvSale->get($path);
     }
+
+    public function posts($params = [])
+    {
+        return $this->apiRsvSale->post('/all', $params);
+    }
+
+    public function all($params = [])
+    {
+        return $this->apiRsvSale->post('/posts', $params);
+    }
 }

@@ -1,0 +1,6 @@
+authtoken: 81DDS5GT6HWchFS6vknMR_2FACtdaYgmyfgwbs2Ay3J
+tunnels:
+  automation: # the tunnel name will called from command line (any)
+    addr: 80
+    proto: http
+    host_header: automation.test.ci

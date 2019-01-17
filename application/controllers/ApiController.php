@@ -28,9 +28,15 @@ class ApiController extends CI_Controller
         //echo json_encode($result);
     }
 
-    public function posts($id = null)
+    public function posts()
     {
-        
-        //echo json_encode(['id' => $id]);
+        $result = $this->apiRsvSalesService->posts([]);
+        echo json_encode(['result' => $result]);
+    }
+
+    public function all()
+    {
+        $result = $this->apiRsvSalesService->all([]);
+        echo json_encode(['result' => $result]);
     }
 }
