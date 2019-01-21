@@ -1,6 +1,5 @@
 <?php
 
-use PHPUnit\Framework\Constraint\Exception;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -61,36 +60,25 @@ class MY_Form_validation extends CI_Form_validation
     {
         $params = array_merge($this->CI->input->post(), $this->CI->input->get());
 
-        if (is_null($field)) {
+        if (empty($field)) {
             throw new Exception('The array rule is required an argument.');
         }
 
         $split = explode(':', $field);
-        $field = array_shift($split);
+        $field = str_replace(['[', ']'], ['.', ''], array_shift($split));
         $parts = explode('.', $field);
-
-        // get the sub rules if any
-        $subRules = [];
-        if (!empty($split)) {
-            foreach ($split as $rule) {
-                $pattern = '#^(?P<method>\w+)\[(?P<size>\d+)\]$#';
-                if (preg_match($pattern, $rule, $matches) === 1) {
-                    $subRules[] = [
-                        'method' => $matches['method'],
-                        'size'   => $matches['size']
-                    ];
-                }
-            }
-        }
 
         // in case the field is not nested
         if (count($parts) === 1) {
-            return array_key_exist($field, $params) && is_array($params[$field]);
+            return array_key_exists($field, $params) && is_array($params[$field]);
         }
-        
+
+        // get the sub rules if any
+        $subrules = $this->_extractSubRules($split);
+ 
         $firstElement = array_shift($parts);
         $valuesCheck  = [$firstElement => $params[$firstElement]];
-
+        
         // in case, inputs are checkboxes or radios
         if (!array_key_exists($firstElement, $params)) {
             return false;
@@ -106,34 +94,9 @@ class MY_Form_validation extends CI_Form_validation
                 for ($s=0; $s < $totalElements; $s++) {
                     foreach ($valuesCheck as $rule => $value) {
                         $temp[$rule."[".$s."]"] = $value[$s];
-                        // if it is the last element, check whether it is an array
-                        if (count($parts) === ($k + 1)) {
-                            if (!is_array($value[$s])) {
-                                $this->set_message($rule."[".$s."]", 'It must be an array.');
-                                return false;
-                            }
-                            // if they have the min, max, size rules
-                            if (!empty($subRules)) {
-                                foreach ($subRules as $subRule) {
-                                    if (method_exists($this, $subRule['method']) && !$this->{$subRule['method']}($value[$s], $subRule['size'])) {
-                                        switch ($subRule['method']) {
-                                            case 'min':
-                                                $this->set_message($rule."[".$s."]", $rule."[".$s."]".' must have at least '.$subRule['size'].' characters.');
-                                                break;
-                                            case 'max':
-                                                $this->set_message($rule."[".$s."]", $rule."[".$s."]".' must have at maxium '.$subRule['size'].' characters.');
-                                                break;
-                                            case 'size':
-                                                $this->set_message($rule."[".$s."]", $rule."[".$s."]".' must have the size as '.$subRule['size'].'.');
-                                                break;
-                                            default:
-                                                break;
-
-                                        }
-                                        return false;
-                                    }
-                                }
-                            }
+                        // if it is the last element, check whether it is an array & check the sub rules of it (min, max, size) if any
+                        if (count($parts) === ($k + 1) && !$this->_validateSubrulesForArray($rule.'['.$s.']', $value[$s], $subrules)) {
+                            return false;
                         }
                     }
                 }
@@ -143,34 +106,9 @@ class MY_Form_validation extends CI_Form_validation
                 $temp = [];
                 foreach ($valuesCheck as $rule => $value) {
                     $temp[$rule."['".$part."']"] = $value[$part];
-                    // if it is the last element, check whether it is an array
-                    if (count($parts) === ($k + 1)) {
-                        if (!is_array($value[$part])) {
-                            $this->set_message($rule."[".$part."]", 'It must be an array.');
-                            return false;
-                        }
-                        // if they have the min, max, size rules
-                        if (!empty($subRules)) {
-                            foreach ($subRules as $subRule) {
-                                if (method_exists($this, $subRule['method']) && !$this->{$subRule['method']}($value[$part], $subRule['size'])) {
-                                    switch ($subRule['method']) {
-                                        case 'min':
-                                            $this->set_message($rule."[".$part."]", $rule."[".$part."]".' must have at least '.$subRule['size'].' characters.');
-                                            break;
-                                        case 'max':
-                                            $this->set_message($rule."[".$part."]", $rule."[".$part."]".' must have at maxium '.$subRule['size'].' characters.');
-                                            break;
-                                        case 'size':
-                                            $this->set_message($rule."[".$part."]", $rule."[".$part."]".' must have the size as '.$subRule['size'].'.');
-                                            break;
-                                        default:
-                                            break;
-
-                                    }
-                                    return false;
-                                }
-                            }
-                        }
+                    // if it is the last element, check whether it is an array & check the sub rules of it (min, max, size) if any
+                    if (count($parts) === ($k + 1) && !$this->_validateSubrulesForArray($rule.'['.$part.']', $value[$part], $subrules)) {
+                        return false;
                     }
                 }
                 $valuesCheck = $temp;
@@ -178,14 +116,74 @@ class MY_Form_validation extends CI_Form_validation
         }
 
         return true;
+    }
 
-        // $errors = [];
-        // foreach ($valuesCheck as $rule => $valueCheck) {
-        //     if (!is_array($valueCheck)) {
-        //         $errors[] = $rule;
-        //     }
-        // }
-        // return count($errors) === 0;
+    /**
+     * Validate the sub rules of array (min, max, size) if any
+     *
+     * @param string $field
+     * @param mixed $valueChecked
+     * @param array $subRules
+     * @return bool
+     */
+    private function _validateSubrulesForArray($field, $valueChecked, $subRules = [])
+    {
+        // the checked value is not an array
+        if (!is_array($valueChecked)) {
+            $this->set_rules($field, '', 'array', ['array' => 'It must be an array.']);
+            return false;
+        }
+
+        // check the sub rules of array (min, max, size) if any
+        if (!empty($subRules)) {
+            foreach ($subRules as $subRule) {
+                if (method_exists($this, $subRule['method'])) {
+                    switch ($subRule['method']) {
+                        case 'min':
+                            $msgError = 'It must have at least '.$subRule['size'].'.';
+                            break;
+                        case 'max':
+                            $msgError = 'It must have at maxium '.$subRule['size'].'.';
+                            break;
+                        case 'size':
+                            $msgError = 'It must have the size as '.$subRule['size'].'.';
+                            break;
+                        default:
+                            $msgError = 'Rule '.$subRule['method'].' not found.';
+                            break;
+
+                    }
+                    $this->set_rules($field, '', 'array', ['array' => $msgError]);
+                    if (!$this->{$subRule['method']}($valueChecked, $subRule['size'])) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Extract the sub rules if any
+     *
+     * @param array $rulesArray
+     * @return array
+     */
+    private function _extractSubRules($rulesArray)
+    {
+        $subrules = [];
+        if (!empty($rulesArray)) {
+            foreach ($rulesArray as $rule) {
+                $pattern = '#^(?P<method>\w+)\[(?P<size>\d+)\]$#';
+                if (preg_match($pattern, $rule, $matches) === 1) {
+                    $subrules[] = [
+                        'method' => $matches['method'],
+                        'size'   => (int)$matches['size']
+                    ];
+                }
+            }
+        }
+        return $subrules;
     }
 
     /**

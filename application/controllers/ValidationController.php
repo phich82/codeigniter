@@ -20,10 +20,4 @@ class ValidationController extends CI_Controller
 
         return $this->load->view('validation/index');
     }
-
-    public function submit()
-    {
-        // validate params from request
-        new TestValidationRequest();
-    }
 }

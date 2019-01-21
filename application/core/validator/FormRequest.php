@@ -85,8 +85,8 @@ class FormRequest extends Validator
     /**
      * Get the nested array rules: ['colors.4.color.*' => 'array']
      *
-     * @param string $field  []
-     * @param array  $params []
+     * @param string $field
+     * @param array  $params
      *
      * @return array
      */
@@ -110,7 +110,7 @@ class FormRequest extends Validator
                 $currentValue  = $currentValue[array_keys($currentValue)[0]];
                 $temp = [];
                 for ($s=0; $s < $totalElements; $s++) {
-                    foreach ($rules as $k => $rule) {
+                    foreach ($rules as $rule) {
                         $temp[] = $rule."[".$s."]";
                     }
                 }
@@ -118,7 +118,7 @@ class FormRequest extends Validator
             } else {
                 $currentValue = $currentValue[$part];
                 $temp = [];
-                foreach ($rules as $k => $rule) {
+                foreach ($rules as $rule) {
                     $temp[] = $rule."[".$part."]";
                 }
                 $rules = $temp;

@@ -29,9 +29,10 @@ class TestValidationRequest extends FormRequest
             'email'        => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]',
             'levels[]'     => 'min_length[5]|max_length[32]|nullable',
             'roles'        => 'array[roles]|nullable',
-            'roles[role]'  => 'array[roles.role:min[1]:max[3]:size[2]]|nullable',
-            'roles.role.*' => 'bool[checkbox]|nullable',
-            'colors.*'     => 'bool[radio]|nullable',
+            'roles[role]'  => 'array[roles[role]:min[1]:max[2]:size[2]]|nullable', //roles[role] = roles.role
+            'roles.role.*' => 'in_list[1,2,3,4]|nullable',
+            'colors'       => 'array[colors:min[5]]|nullable',
+            'colors.*'     => 'in_list[1,2,3,4]|nullable',
         ];
     }
 
@@ -54,9 +55,8 @@ class TestValidationRequest extends FormRequest
             'passconf.required' => 'Please enter password confirmation.',
             'email.email' => 'Please enter an valid email.',
             'roles.array' => 'Role must be an array',
-            'roles.role.array' => 'Role must be an array',
-            'roles.role.*.bool' => 'Role is a boolean value',
-            'colors.*.bool' => 'Color is a boolean value',
+            // 'roles.role.array' => 'Role must be an array',
+            'colors.*' => 'Color is a boolean value',
         ];
     }
 

@@ -44,9 +44,9 @@
 
             <h5>Colors</h5>
             <input type="radio" name="colors[]" value="1" <?php echo set_value('colors[0]') == 1 ? ' checked' : ''; ?> /> Blue<br>
-            <input type="radio" name="colors[]" value="2" <?php echo set_value('colors[1]') == 2 ? ' checked' : ''; ?> /> Red<br>
-            <input type="radio" name="colors[]" value="3" <?php echo set_value('colors[2]') == 3 ? ' checked' : ''; ?> /> Yellow<br>
-            <input type="radio" name="colors[]" value="" /> Organe
+            <input type="radio" name="colors[]" value="2" <?php echo set_value('colors[0]') == 2 ? ' checked' : ''; ?> /> Red<br>
+            <input type="radio" name="colors[]" value="3" <?php echo set_value('colors[0]') == 3 ? ' checked' : ''; ?> /> Yellow<br>
+            <input type="radio" name="colors[]" value="6" <?php echo set_value('colors[0]') == 4 ? ' checked' : ''; ?> /> Organe
 
             <h5>Password</h5>
             <?php if (array_key_exists('password', $errors)): ?>
