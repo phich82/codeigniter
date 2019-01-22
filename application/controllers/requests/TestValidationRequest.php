@@ -33,6 +33,7 @@ class TestValidationRequest extends FormRequest
             'roles.role.*' => 'in_list[1,2,3,4]|nullable',
             'colors'       => 'array[colors:min[5]]|nullable',
             'colors.*'     => 'in_list[1,2,3,4]|nullable',
+            'datetime'     => 'datetime[Ymd]',
         ];
     }
 
@@ -57,6 +58,7 @@ class TestValidationRequest extends FormRequest
             'roles.array' => 'Role must be an array',
             // 'roles.role.array' => 'Role must be an array',
             'colors.*' => 'Color is a boolean value',
+            //'datetime.datetime' => 'Datetime must be in format [Ymd].',
         ];
     }
 

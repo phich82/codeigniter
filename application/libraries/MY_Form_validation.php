@@ -314,4 +314,12 @@ class MY_Form_validation extends CI_Form_validation
                 return is_bool($value);
         }
     }
+
+    public function datetime($date, $format = 'Y-m-d H:i:s') {
+        if (date($format, strtotime($date)) == $date) {
+            return true;
+        }
+        $this->set_message('datetime', 'The {field} field must have format [' . $format . ']');
+        return FALSE;
+    }
 }

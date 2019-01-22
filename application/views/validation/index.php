@@ -48,6 +48,9 @@
             <input type="radio" name="colors[]" value="3" <?php echo set_value('colors[0]') == 3 ? ' checked' : ''; ?> /> Yellow<br>
             <input type="radio" name="colors[]" value="6" <?php echo set_value('colors[0]') == 4 ? ' checked' : ''; ?> /> Organe
 
+            <h5>Datetime</h5>
+            <input type="text" name="datetime" value="<?php echo set_value('datetime'); ?>" />
+
             <h5>Password</h5>
             <?php if (array_key_exists('password', $errors)): ?>
                 <label class="text-danger"><?php echo form_error('password', null, null); ?></label><br>
