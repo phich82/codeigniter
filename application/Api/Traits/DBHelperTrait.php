@@ -206,7 +206,11 @@ trait DBHelperTrait
      */
     public function getTable()
     {
-        return property_exists(get_class(), 'table') ? $this->table : $this->_plural(get_class());
+        $table = property_exists(get_class(), 'table') ? $this->table : $this->_plural(get_class());
+        if ($this->db->table_exists($table)) {
+            return $table;
+        }
+        throw new Exception('Table ['.$table.'] does not exist in database.');
     }
 
     /**
@@ -236,15 +240,49 @@ trait DBHelperTrait
             return $id;
         }
 
-        // only get field that it contains primary key from database
-        $field = array_filter($this->db->field_data($this->table()), function ($field) {
-            return $field->primary_key === 1;
-        });
+        // get primary key from database
+        $primaryKey = $this->db->primary($this->table());
 
-        if (empty($field)) {
+        if (empty($primaryKey)) {
             return $id === true ? 'id' : null;
         }
-        return $field[0]->name;
+        return $primaryKey;
+    }
+
+    /**
+     * Get the columns of table
+     *
+     * @param string $table
+     *
+     * @return array
+     */
+    public function columns($table = null)
+    {
+        $table = $table ?: $this->table();
+        if ($this->db->table_exists($table)) {
+            return $this->db->list_fields($table);
+        }
+        throw new Exception('Table ['.$table.'] does not exist in database.');
+    }
+
+    /**
+     * Check the fields whether they exist in the specified table of database
+     *
+     * @param array|string $fieldsChecked
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function fieldsTableExists($fieldsChecked = [], $table = null)
+    {
+        // the checked fields empty 
+        if (is_array($fieldsChecked) && count($fieldsChecked) === 0) {
+            return false;
+        }
+
+        $fieldsChecked = is_string($fieldsChecked) ? [$fieldsChecked] : array_keys($fieldsChecked);
+
+        return empty(array_diff($fieldsChecked, $this->columns($table)));
     }
 
     /**
