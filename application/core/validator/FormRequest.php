@@ -11,6 +11,7 @@ class FormRequest extends Validator
     protected $request;
     protected $input;
     public $error;
+    private $CI;
 
     /**
      * Constructor.
@@ -40,7 +41,7 @@ class FormRequest extends Validator
             // set delimiter
             $CI->form_validation->set_error_delimiters(null, null);
             // validate form
-            $CI->form_validation->set_rules($this->_getRules())->run();
+            $CI->form_validation->set_rules($this->_getRules($CI->form_validation->validation_data))->run();
             // track the error if any
             if (!empty($error = $CI->form_validation->error_array())) {
                 $this->error = $error;
@@ -51,9 +52,10 @@ class FormRequest extends Validator
     /**
      * Get rules.
      *
+     * @param array $customData
      * @return array
      */
-    private function _getRules()
+    private function _getRules($customData = [])
     {
         $messages   = $this->_getMessages();
         $attributes = $this->attributes();
@@ -61,22 +63,44 @@ class FormRequest extends Validator
         $config = [];
         foreach ($this->rules() as $field => $rules) {
             if (strpos($field, '.') === false) {
-                $config[] = [
+                // $config[] = [
+                //     'field'  => $field,
+                //     'label'  => array_key_exists($field, $attributes) ? $attributes[$field] : null,
+                //     'rules'  => $rules,
+                //     'errors' => array_key_exists($field, $messages) ? $messages[$field] : []
+                // ];
+                $r = [
                     'field'  => $field,
                     'label'  => array_key_exists($field, $attributes) ? $attributes[$field] : null,
                     'rules'  => $rules,
-                    'errors' => array_key_exists($field, $messages) ? $messages[$field] : []
+                    'errors' => array_key_exists($field, $messages) ? $messages[$field] : ['ssss']
                 ];
-            } else {
-                $fields = $this->_getNestedArrayFields($field);
-                foreach ($fields as $nestedField) {
-                    $config[] = [
-                        'field'  => $nestedField,
-                        'label'  => array_key_exists($nestedField, $attributes) ? $attributes[$nestedField] : null,
-                        'rules'  => $rules,
-                        'errors' => array_key_exists($nestedField, $messages) ? $messages[$nestedField] : []
+
+                $arrayRule = array_filter(explode('|', $rules), function ($item) {
+                    return substr($item, 0, strlen('array')) == 'array';
+                });
+
+                if (!empty($arrayRule)) {
+                    $CI =& get_instance();
+                    $CI->load->library('form_validation');
+                    $CI->form_validation->set_message('array', 'text dont match captcha');
+                    $r['rules'] = [
+                        'array', function ($v) use ($customData, $field, $CI) {
+                            return is_array($customData[$field]);
+                        }
                     ];
                 }
+                $config[] = $r;
+            } else {
+                // $fields = $this->_getNestedArrayFields($field, $customData);
+                // foreach ($fields as $nestedField) {
+                //     $config[] = [
+                //         'field'  => $nestedField,
+                //         'label'  => array_key_exists($nestedField, $attributes) ? $attributes[$nestedField] : null,
+                //         'rules'  => $rules,
+                //         'errors' => array_key_exists($nestedField, $messages) ? $messages[$nestedField] : []
+                //     ];
+                // }
             }
         }
         return $config;
@@ -106,6 +130,11 @@ class FormRequest extends Validator
     
         foreach ($parts as $part) {
             if ($part == '*') {
+                // key not exist
+                if (empty(array_keys($currentValue)) || !isset($currentValue[array_keys($currentValue)[0]])) {
+                    return [];
+                }
+
                 $totalElements = count($currentValue);
                 $currentValue  = $currentValue[array_keys($currentValue)[0]];
                 $temp = [];
@@ -116,6 +145,11 @@ class FormRequest extends Validator
                 }
                 $rules = $temp;
             } else {
+                // key not exist
+                if (!isset($currentValue[$part])) {
+                    return [];
+                }
+
                 $currentValue = $currentValue[$part];
                 $temp = [];
                 foreach ($rules as $rule) {

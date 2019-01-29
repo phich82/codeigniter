@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require 'requests/ApiValidationRequest.php';
 class ApiController extends CI_Controller
 {
     /**
@@ -22,13 +23,42 @@ class ApiController extends CI_Controller
      */
     public function index()
     {
+        $CI = &get_instance();
+        $CI->load->library('form_validation');
 
-        $params = [
-            //'a' => 1,
-            'id' => 1,
-            'name' => 'jhp'
+        $data = [
+            'roles' => 12
+            // 'roles' => [
+            //     ['name' => 'name1'],
+            //     ['name' => 'name2'],
+            // ]
         ];
-        var_dump($this->fieldsTableExists(array_keys($params), 'messages'));
+        $CI->form_validation->set_data($data);
+        // validate params from request
+        $validator = new ApiValidationRequest();
+        var_dump($CI->form_validation->validation_data, $validator->hasError(), $validator->error());
+
+        // $params = [
+        //     //'a' => 1,
+        //     'id' => 1,
+        //     'name' => 'jhp'
+        // ];
+        // var_dump($this->fieldsTableExists(array_keys($params), 'messages'));
+
+        // update multiple rows at once time by conditions
+        //id=4: shad.stracke, message: Queen said--' 'Get to your little boy, And beat.
+        // $params = [
+        //     ['name' => 'cremin.nat', 'message' => "[xxx1] So she tucked her arm affectionately into."],
+        //     ['name' => 'bahringer.elsa', 'message' => "[xxx1] Crab took the opportunity of adding, You're."],
+        //     ['name' => 'kreiger.annabell', 'message' => "[xxx1] Rabbit actually TOOK A WATCH OUT OF ITS."],
+        // ];
+        // $conditions = [
+        //     'status' => 1,
+        //     'store' => 2
+        // ];
+        // $index = 'name';
+        // var_dump($this->updateManyBy($params, $conditions, $index));
+
         //$di = load_class('DI', 'Api/Ioc');
         //echo json_encode($di->test());
         //$result = $this->apiRsvSalesService->getGuzzle('/posts');
@@ -68,5 +98,23 @@ class ApiController extends CI_Controller
             return empty(array_diff($fieldsChecked, $CI->db->list_fields($table)));
         };
         return $fieldsTableExists($fieldsChecked, $table);
+    }
+
+    public function updateManyBy($params = [], $conditions = [], $index = null)
+    {
+        $CI = &get_instance();
+        $CI->load->database();
+
+        // invalid request
+        if (empty($params) || empty($conditions)) {
+            return false;
+        }
+
+        // set the where conditions
+        foreach ($conditions as $column => $value) {
+            $CI->db->where($column, $value);
+        }
+
+        return $CI->db->update_batch('messages', $params, $index);
     }
 }

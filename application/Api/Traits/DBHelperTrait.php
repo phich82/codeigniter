@@ -155,15 +155,38 @@ trait DBHelperTrait
     /**
      * Update multiple records
      *
-     * @param int    $id         []
      * @param array  $params     []
      * @param string $primaryKey []
      *
      * @return bool
      */
-    public function updateMany($id, $params = [], $primaryKey = null)
+    public function updateMany($params = [], $primaryKey = null)
     {
-        return empty($id) || empty($params) ? false : $this->db->update_batch($this->table(), $params, $this->primary_key($primayKey));
+        return empty($params) ? false : $this->db->update_batch($this->table(), $params, $this->primary_key($primaryKey));
+    }
+
+    /**
+     * Update multiple records by conditions
+     *
+     * @param array  $params     []
+     * @param array  $conditions []
+     * @param string $index      []
+     *
+     * @return bool
+     */
+    public function updateManyBy($params = [], $conditions = [], $index = null)
+    {
+        // invalid request
+        if (empty($params) || empty($conditions)) {
+            return false;
+        }
+
+        // set the where conditions
+        foreach ($conditions as $column => $value) {
+            $this->db->where($column, $value);
+        }
+
+        return $this->db->update_batch($this->table(), $params, $index ?: $this->primary_key());
     }
     
     /**

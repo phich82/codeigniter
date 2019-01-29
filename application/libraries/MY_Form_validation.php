@@ -58,8 +58,8 @@ class MY_Form_validation extends CI_Form_validation
      */
     public function array($input, $field = null)
     {
-        $params = array_merge($this->CI->input->post(), $this->CI->input->get());
-
+        $params = !empty($this->validation_data) ? $this->validation_data : array_merge($this->CI->input->post(), $this->CI->input->get());
+ 
         if (empty($field)) {
             throw new Exception('The array rule is required an argument.');
         }
@@ -68,14 +68,25 @@ class MY_Form_validation extends CI_Form_validation
         $field = str_replace(['[', ']'], ['.', ''], array_shift($split));
         $parts = explode('.', $field);
 
+        // get the sub rules if any
+        $subrules = [];
+        if (count($split) > 0) {
+            // get the sub rules if any
+            $subrules = $this->_extractSubRules($split);
+        }
+var_dump($parts);exit('1111');
         // in case the field is not nested
         if (count($parts) === 1) {
-            return array_key_exists($field, $params) && is_array($params[$field]);
+            if (empty($subrules)) {
+                return array_key_exists($field, $params) && is_array($params[$field]);
+
+            }var_dump($field, $params[$field], $subrules);exit;
+            return $this->_validateSubrulesForArray($field, $params[$field], $subrules);
         }
 
         // get the sub rules if any
-        $subrules = $this->_extractSubRules($split);
- 
+        //$subrules = $this->_extractSubRules($split);
+
         $firstElement = array_shift($parts);
         $valuesCheck  = [$firstElement => $params[$firstElement]];
         
@@ -85,7 +96,7 @@ class MY_Form_validation extends CI_Form_validation
         }
 
         $currentValue = $params[$firstElement];
-    
+ var_dump($valuesCheck, $parts);exit;
         foreach ($parts as $k => $part) {
             if ($part == '*') {
                 $totalElements = count($currentValue);
@@ -195,16 +206,20 @@ class MY_Form_validation extends CI_Form_validation
      */
     public function min($value, $min = 0)
     {
+        if (!is_numeric($min) || !is_int((int)$min)) {
+            return false;
+        }
+
         // for string or number
         if (is_string($value) || is_numeric($value)) {
-            return strlen($value) >= $min;
+            return strlen($value) >= (int)$min;
         }
         // for array
         if (is_array($value)) {
-            return count($value) >= $min;
+            return count($value) >= (int)$min;
         }
         // for file (size in kilobytes)
-        return is_file($value) && ((filesize($value) / 1024) >= $min);
+        return is_file($value) && ((filesize($value) / 1024) >= (int)$min);
     }
 
     /**
@@ -216,16 +231,19 @@ class MY_Form_validation extends CI_Form_validation
      */
     public function max($value, $max = 0)
     {
+        if (!is_numeric($max) || !is_int((int)$max)) {
+            return false;
+        }
         // for string or number
         if (is_string($value) || is_numeric($value)) {
-            return strlen($value) <= $max;
+            return strlen($value) <= (int)$max;
         }
         // for array
         if (is_array($value)) {
-            return count($value) <= $max;
+            return count($value) <= (int)$max;
         }
         // for file (size in kilobytes)
-        return is_file($value) && ((filesize($value) / 1024) <= $max);
+        return is_file($value) && ((filesize($value) / 1024) <= (int)$max);
     }
 
     /**
@@ -237,16 +255,19 @@ class MY_Form_validation extends CI_Form_validation
      */
     public function size($value, $size = 0)
     {
+        if (!is_numeric($size) || !is_int((int)$size)) {
+            return false;
+        }
         // for string or number
         if (is_string($value) || is_numeric($value)) {
-            return strlen($value) === $size;
+            return strlen($value) === (int)$size;
         }
         // for array
         if (is_array($value)) {
-            return count($value) === $size;
+            return count($value) === (int)$size;
         }
         // for file (size in kilobytes)
-        return is_file($value) && ((filesize($value) / 1024) === $size);
+        return is_file($value) && ((filesize($value) / 1024) === (int)$size);
     }
 
     /**
