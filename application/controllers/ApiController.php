@@ -27,10 +27,9 @@ class ApiController extends CI_Controller
         $CI->load->library('form_validation');
 
         $data = [
-            'roles' => 12
             // 'roles' => [
             //     ['name' => 'name1'],
-            //     ['name' => 'name2'],
+            //     //['name' => 'name2'],
             // ]
         ];
         $CI->form_validation->set_data($data);

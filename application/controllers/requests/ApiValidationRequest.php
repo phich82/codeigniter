@@ -23,7 +23,7 @@ class ApiValidationRequest extends FormRequest
     public function rules()
     {
         return [
-            'roles' => 'array',
+            'roles' => 'array[min[1]:max[2]]',
             //'roles.*' => 'array[roles.*]',
         ];
     }
@@ -36,7 +36,7 @@ class ApiValidationRequest extends FormRequest
     public function messages()
     {
         return [
-            'roles.array' => 'Role must be an array',
+            //'roles.array' => 'Role must be an array.',
         ];
     }
 
@@ -48,7 +48,7 @@ class ApiValidationRequest extends FormRequest
     public function attributes()
     {
         return [
-            'roles' => 'Roles',
+            //'roles' => 'Roles',
         ];
     }
 }

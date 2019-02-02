@@ -74,13 +74,13 @@ class MY_Form_validation extends CI_Form_validation
             // get the sub rules if any
             $subrules = $this->_extractSubRules($split);
         }
-var_dump($parts);exit('1111');
+
         // in case the field is not nested
         if (count($parts) === 1) {
             if (empty($subrules)) {
                 return array_key_exists($field, $params) && is_array($params[$field]);
 
-            }var_dump($field, $params[$field], $subrules);exit;
+            }//var_dump($field, $params[$field], $subrules);exit;
             return $this->_validateSubrulesForArray($field, $params[$field], $subrules);
         }
 
@@ -96,7 +96,7 @@ var_dump($parts);exit('1111');
         }
 
         $currentValue = $params[$firstElement];
- var_dump($valuesCheck, $parts);exit;
+
         foreach ($parts as $k => $part) {
             if ($part == '*') {
                 $totalElements = count($currentValue);
