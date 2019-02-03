@@ -77,13 +77,11 @@ class FormRequest extends Validator
                     'rules'  => $rules,
                     'errors' => $messages[$field] ?? null,
                 ];
-
                 // check the rule of array and the subrules of array if any
                 $arrayRule = $this->_getArrayRule($field, $rules);
                 if (!empty($arrayRule)) {
                     $configRule['rules'] = [$arrayRule];
                 }
-
                 $config[] = $configRule;
             } else {
                 $fields = $this->_getNestedArrayFields($field);
@@ -96,14 +94,13 @@ class FormRequest extends Validator
                     ];
                     // check the rule of array and the subrules of array if any
                     $arrayRule = $this->_getArrayRule($nestedField, $rules, true);
-                    var_dump($arrayRule);
                     if (!empty($arrayRule)) {
                         $configRule['rules'] = [$arrayRule];
                     }
                     $config[] = $configRule;
                 }
             }
-        }//var_dump($config);exit;
+        }
         return $config;
     }
 
@@ -306,17 +303,15 @@ class FormRequest extends Validator
         if (!empty($arrayRule)) {
             $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
             $valueChecked = $this->_getValueChecked($field, $isNested);
-            //if ($isNested === true) {var_dump($field, $valueChecked);}
 
-            return [$arrayRuleName, function ($value) use ($valueChecked, $subrules, $arrayRuleName, $isNested) {
-                //if ($isNested === true) {var_dump($valueChecked);}
+            return [$arrayRuleName, function ($value) use ($valueChecked, $subrules, $arrayRuleName) {
                 // check it is an array
                 if (!is_array($valueChecked)) {
                     $this->set_message($arrayRuleName, 'The {field} field must be an array.');
                     return false;
                 }
                 // validate the subrules of array (min, max, size) if found
-                return $this->_validateArraySubrules($valueChecked, $subrules);
+                return $this->_validateArraySubrules($valueChecked, $subrules, $arrayRuleName);
             }];
         }
         return null;
@@ -389,12 +384,11 @@ class FormRequest extends Validator
      * @param  string $field
      * @param  mixed  $valueChecked
      * @param  array  $subRules
+     * @param  string $arrayRuleName
      * @return bool
      */
-    private function _validateArraySubrules($valueChecked, $subrules = [])
+    private function _validateArraySubrules($valueChecked, $subrules = [], $arrayRuleName = 'array')
     {
-        $arrayRuleName = 'array';
-
         // the checked value is not an array
         if (!is_array($valueChecked)) {
             $this->set_message($arrayRuleName, 'The {field} field must be an array.');
