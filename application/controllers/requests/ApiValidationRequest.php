@@ -23,8 +23,11 @@ class ApiValidationRequest extends FormRequest
     public function rules()
     {
         return [
-            'roles' => 'array[min[1]:max[2]]',
-            //'roles.*' => 'array[roles.*]',
+            'roles' => 'array[min[1]:max[2]:size[2]]',
+            //'roles.*.name' => 'in_list[A,B]',
+            //'roles.*.name' => 'integer',
+            //'colors.*.color.*' => 'in_list[A,B]',
+            'colors.*.color' => 'array[size[3]]',
         ];
     }
 
