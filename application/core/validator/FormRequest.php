@@ -96,6 +96,7 @@ class FormRequest extends Validator
                     ];
                     // check the rule of array and the subrules of array if any
                     $arrayRule = $this->_getArrayRule($nestedField, $rules, true);
+                    var_dump($arrayRule);
                     if (!empty($arrayRule)) {
                         $configRule['rules'] = [$arrayRule];
                     }
@@ -305,11 +306,13 @@ class FormRequest extends Validator
         if (!empty($arrayRule)) {
             $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
             $valueChecked = $this->_getValueChecked($field, $isNested);
+            //if ($isNested === true) {var_dump($field, $valueChecked);}
 
-            return [$arrayRuleName, function ($value) use ($valueChecked, $subrules, $arrayRuleName) {
+            return [$arrayRuleName, function ($value) use ($valueChecked, $subrules, $arrayRuleName, $isNested) {
+                //if ($isNested === true) {var_dump($valueChecked);}
                 // check it is an array
                 if (!is_array($valueChecked)) {
-                    $this->CI->form_validation->set_message($arrayRuleName, 'The {field} field must be an array.');
+                    $this->set_message($arrayRuleName, 'The {field} field must be an array.');
                     return false;
                 }
                 // validate the subrules of array (min, max, size) if found
@@ -329,11 +332,39 @@ class FormRequest extends Validator
      */
     private function _getValueChecked($field, $isNested = false)
     {
-        $data = !empty($this->CI->form_validation->validation_data) ? $this->CI->form_validation->validation_data : array_merge($this->CI->input->post(), $this->CI->input->get());
+        $data = $this->_getDataValidation();
         if ($isNested === true) {
             return $this->array_access($data, $field);
         }
         return isset($data[$field]) ? $data[$field] : $this->_throwError($field);
+    }
+
+    /**
+     * Get the data for validation
+     *
+     * @param  array $dataCustom
+     * @return array
+     */
+    private function _getDataValidation($dataCustom = [])
+    {
+        if (is_array($dataCustom) && !empty($dataCustom)) {
+            return $dataCustom;
+        }
+        return !empty($this->CI->form_validation->validation_data)
+                    ? $this->CI->form_validation->validation_data
+                    : array_merge($this->CI->input->post(), $this->CI->input->get());
+    }
+
+    /**
+     * Set the message for the given rule
+     *
+     * @param  string $ruleName
+     * @param  string $message
+     * @return void
+     */
+    private function set_message($ruleName, $message)
+    {
+        return $this->CI->form_validation->set_message($ruleName, $message);
     }
 
     /**
@@ -374,12 +405,12 @@ class FormRequest extends Validator
         foreach ($subrules as $subrule) {
             // the subrule method not found
             if (!method_exists($this, $subrule['method'])) {
-                $this->CI->form_validation->set_message($arrayRuleName, 'The rule ['.$subrule['method'].'] for the {field} field is not found.');
+                $this->set_message($arrayRuleName, 'The rule ['.$subrule['method'].'] for the {field} field is not found.');
                 return false;
             }
             // validate the subrule of array
             if (!$this->{$subrule['method']}($valueChecked, $subrule['size'])) {
-                $this->CI->form_validation->set_message($arrayRuleName, $this->_getMsgErrorBySubrule($subrule['method'], $subrule['size']));
+                $this->set_message($arrayRuleName, $this->_getMsgErrorBySubrule($subrule['method'], $subrule['size']));
                 return false;
             }
         }
