@@ -31,6 +31,7 @@ class FormRequest extends Validator
     /**
      * Validate form.
      *
+     * @param  array $data
      * @return void
      */
     private function _validate($data)
@@ -221,11 +222,6 @@ class FormRequest extends Validator
         return $this->error;
     }
 
-    private function nullable($value)
-    {
-        return is_null($value) || $value === '';
-    }
-
     /**
      * Throw exception
      *
@@ -240,18 +236,31 @@ class FormRequest extends Validator
     }
 
     /**
+     * Validate the value can be null.
+     *
+     * @param string|null $value
+     *
+     * @return bool
+     */
+    private function nullable($value)
+    {
+        return is_null($value) || $value === '';
+    }
+
+    /**
      * Set the rule of array and the subrules of array
      *
-     * @param  mixed $field
-     * @param  mixed $rules
+     * @param  string $field
+     * @param  array  $rules
      *
      * @return void
      */
     private function _getArrayRule($field, $rules)
     {
+        $ruleName = 'array';
         // check the rule of array if found
-        $arrayRule = array_filter(explode('|', $rules), function ($item) {
-            return substr($item, 0, strlen('array')) == 'array';
+        $arrayRule = array_filter(explode('|', $rules), function ($item) use ($ruleName) {
+            return substr($item, 0, strlen($ruleName)) == $ruleName;
         });
 
         if (!empty($arrayRule)) {
@@ -262,14 +271,15 @@ class FormRequest extends Validator
 
             $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
 
-            return ['array', function ($value) use ($data, $field, $subrules, $CI) {
+            return [$ruleName, function ($value) use ($data, $field, $subrules, $CI) {
+                // key not found
                 if (!array_key_exists($field, $data)) {
-                    $CI->form_validation->set_message('array', 'The {field} field is not found.');
+                    $CI->form_validation->set_message($ruleName, 'The {field} field is not found.');
                     return false;
                 }
                 // check it is an array
                 if (!is_array($data[$field])) {
-                    $CI->form_validation->set_message('array', 'The {field} field must be an array.');
+                    $CI->form_validation->set_message($ruleName, 'The {field} field must be an array.');
                     return false;
                 }
                 // validate the subrules of array (min, max, size) if found
@@ -289,9 +299,11 @@ class FormRequest extends Validator
     private function _getSubRules($arrayRule = [])
     {
         $arrayRule = is_array($arrayRule) ? $arrayRule[0] : $arrayRule;
-        preg_match('#^(?P<rule>\w+)\[(?P<subrule>.*)\]$#', $arrayRule, $matches);
-
-        return !empty($matches['subrule']) ? explode(':', $matches['subrule']) : [];
+        $subrules  = [];
+        if (preg_match('#^(?P<rule>\w+)\[(?P<subrule>.*)\]$#', $arrayRule, $matches) === 1 && isset($matches['subrule'])) {
+            $subrules = explode(':', $matches['subrule']);
+        }
+        return $subrules;
     }
 
     /**
@@ -316,27 +328,14 @@ class FormRequest extends Validator
         
         // check the sub rules of array (min, max, size) if any
         foreach ($subrules as $subrule) {
-            if (method_exists($this, $subrule['method'])) {
-                switch ($subrule['method']) {
-                    case 'min':
-                        $msgError = 'The {field} field must have at least '.$subrule['size'].'.';
-                        break;
-                    case 'max':
-                        $msgError = 'The {field} field must have at maxium '.$subrule['size'].'.';
-                        break;
-                    case 'size':
-                        $msgError = 'The {field} field must have the size as '.$subrule['size'].'.';
-                        break;
-                    default:
-                        $msgError = 'Rule '.$subrule['method'].' not found.';
-                        break;
-                }
-                if (!$this->{$subrule['method']}($valueChecked, $subrule['size'])) {
-                    $CI->form_validation->set_message($ruleName, $msgError);
-                    return false;
-                }
-            } else { // method not found
+            // the subrule method not found
+            if (!method_exists($this, $subrule['method'])) {
                 $CI->form_validation->set_message($ruleName, 'The rule ['.$subrule['method'].'] for the {field} field is not found.');
+                return false;
+            }
+            // validate the subrule of array
+            if (!$this->{$subrule['method']}($valueChecked, $subrule['size'])) {
+                $CI->form_validation->set_message($ruleName, $this->_getMsgErrorBySubrule($subrule['method'], $subrule['size']));
                 return false;
             }
         }
@@ -349,21 +348,46 @@ class FormRequest extends Validator
      * @param array $rulesArray
      * @return array
      */
-    private function _extractSubRules($rulesArray)
+    private function _extractSubRules($rulesArray = [])
     {
         $subrules = [];
-        if (!empty($rulesArray)) {
-            foreach ($rulesArray as $rule) {
-                $pattern = '#^(?P<method>\w+)\[(?P<size>\d+)\]$#';
-                if (preg_match($pattern, $rule, $matches) === 1) {
-                    $subrules[] = [
-                        'method' => $matches['method'],
-                        'size'   => (int)$matches['size']
-                    ];
-                }
+        $rulesArray = is_array($rulesArray) ? $rulesArray : [];
+        foreach ($rulesArray as $rule) {
+            if (preg_match('#^(?P<method>\w+)\[(?P<size>\d+)\]$#', $rule, $matches) === 1) {
+                $subrules[] = [
+                    'method' => $matches['method'],
+                    'size'   => (int)$matches['size']
+                ];
             }
         }
         return $subrules;
+    }
+
+    /**
+     * Get the error message by the sub rule of array
+     *
+     * @param string $method
+     * @param int $size
+     *
+     * @return string
+     */
+    private function _getMsgErrorBySubrule($method, $size)
+    {
+        switch ($method) {
+            case 'min':
+                $msgError = 'The {field} field must have at least '.$size.'.';
+                break;
+            case 'max':
+                $msgError = 'The {field} field must have at maxium '.$size.'.';
+                break;
+            case 'size':
+                $msgError = 'The {field} field must have the size as '.$size.'.';
+                break;
+            default:
+                $msgError = 'Rule ['.$method.'] is not found.';
+                break;
+        }
+        return $msgError;
     }
 
     /**
