@@ -282,7 +282,7 @@ class FormRequest extends Validator
             // set its value to null
             if (!empty($subrules) && empty($valueChecked)) {
                 $this->set_null($field);
-                /* we do not need to check the error (field not exist) because it is checked above.
+                /* we do not need to check the error (field not exist) because it was checked above.
                 if ($this->set_null($field) === false) {
                     return ['required', function ($value) use ($hasNullableRule) {
                         return $hasNullableRule;
