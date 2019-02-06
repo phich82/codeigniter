@@ -20,12 +20,28 @@ class FormRequest extends Validator
      */
     public function __construct($data = [])
     {
-        //$input = new CI_Input();
-        //$this->input   = $input;
-        //$this->request = $input;
-
         // validate the parameters from the request
         $this->_validate($data);
+    }
+
+    /**
+     * Check whether the error has occured
+     *
+     * @return bool
+     */
+    public function hasError()
+    {
+        return !empty($this->error);
+    }
+
+    /**
+     * Get error
+     *
+     * @return array|null
+     */
+    public function error()
+    {
+        return $this->error;
     }
 
     /**
@@ -42,14 +58,18 @@ class FormRequest extends Validator
             $this->CI->load->library('form_validation');
             $this->input   = $this->CI->input;
             $this->request = $this->CI->input;
+
             // set the custom data if any
             if (!empty($data)) {
                 $this->CI->form_validation->set_data($data);
             }
+
             // set delimiter
             $this->CI->form_validation->set_error_delimiters(null, null);
+        
             // validate form
             $this->CI->form_validation->set_rules($this->_getRules())->run();
+
             // track the error if any
             if (!empty($error = $this->CI->form_validation->error_array())) {
                 $this->error = $error;
@@ -70,38 +90,46 @@ class FormRequest extends Validator
         
         $config = [];
         foreach ($this->rules() as $field => $rules) {
-            if (strpos($field, '.') === false) {
-                $configRule = [
-                    'field'  => $field,
-                    'label'  => $attributes[$field] ?? null,
-                    'rules'  => $rules,
-                    'errors' => $messages[$field] ?? null,
-                ];
-                // check the rule of array and the subrules of array if any
-                $arrayRule = $this->_getArrayRule($field, $rules);
-                if (!empty($arrayRule)) {
-                    $configRule['rules'] = [$arrayRule];
-                }
-                $config[] = $configRule;
-            } else {
-                $fields = $this->_getNestedArrayFields($field);
-                foreach ($fields as $nestedField) {
-                    $configRule = [
-                        'field'  => $nestedField,
-                        'label'  => $attributes[$nestedField] ?? null,
-                        'rules'  => $rules,
-                        'errors' => $messages[$nestedField] ?? null,
-                    ];
-                    // check the rule of array and the subrules of array if any
-                    $arrayRule = $this->_getArrayRule($nestedField, $rules, true);
-                    if (!empty($arrayRule)) {
-                        $configRule['rules'] = [$arrayRule];
-                    }
-                    $config[] = $configRule;
+            if (strpos($field, '.') === false) { // not nested field
+                $config[] = $this->_getRuleConfig($field, $attributes, $rules, $messages);
+            } else { // the nested field
+                foreach ($this->_getNestedArrayFields($field) as $nestedField) {
+                    $config[] = $this->_getRuleConfig($nestedField, $attributes, $rules, $messages, true);
                 }
             }
         }
         return $config;
+    }
+
+    /**
+     * Get the rule config for every field
+     *
+     * @param  string       $field
+     * @param  string|array $attributes
+     * @param  string       $rules
+     * @param  string|array $messages
+     * @param  bool         $isNested
+     * @return array
+     */
+    private function _getRuleConfig($field, $attributes, $rules, $messages, $isNested = false)
+    {
+        $label  = is_array($attributes) ? ($attributes[$field] ?? null) : $attributes;
+        $errors = is_array($messages)   ? ($messages[$field]   ?? null) : $messages;
+
+        $configRule = [
+            'field'  => $field,
+            'label'  => $label,
+            'rules'  => $rules,
+            'errors' => $errors,
+        ];
+
+        // check the rule of array and the subrules of array if any
+        $arrayRule = $this->_getArrayRule($field, $rules, $isNested);
+        if (!empty($arrayRule)) {
+            $configRule['rules'] = [$arrayRule];
+        }
+
+        return $configRule;
     }
 
     /**
@@ -113,8 +141,8 @@ class FormRequest extends Validator
      */
     private function _getNestedArrayFields($field)
     {
-        $data = !empty($this->CI->form_validation->validation_data) ? $this->CI->form_validation->validation_data : array_merge($this->input->post(), $this->input->get());
-        $parts  = explode('.', $field);
+        $data  = $this->_getDataValidation();
+        $parts = explode('.', $field);
         $firstElement = array_shift($parts);
         $rules = [$firstElement];
 
@@ -208,26 +236,6 @@ class FormRequest extends Validator
     }
 
     /**
-     * Check whether the error has occured
-     *
-     * @return bool
-     */
-    public function hasError()
-    {
-        return !empty($this->error);
-    }
-
-    /**
-     * Get error
-     *
-     * @return array|null
-     */
-    public function error()
-    {
-        return $this->error;
-    }
-
-    /**
      * Throw exception
      *
      * @param  string $field
@@ -240,52 +248,6 @@ class FormRequest extends Validator
     }
 
     /**
-     * Get the value of array by the nested key string
-     *
-     * @param  array $array
-     * @param  array|string $keys
-     * @return mixed
-     */
-    private function &array_access(&$array, $keys)
-    {
-        // Check if the keys is a string
-        if (is_string($keys)) {
-            $firstChar = substr($keys, 0, 1);
-            if ($firstChar != '[') {
-                $pos = strpos($keys, '[');
-                $keys = $pos === false ? '['.$keys.']' : '["'.substr($keys, 0, $pos).'"]'.substr($keys, $pos);
-            }
-            // parse it to an array
-            $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
-        }
-        
-        // if it is the nested array, go deeply into array
-        if ($keys) {
-            $key = array_shift($keys);
-            // key not exist
-            if (!isset($array[$key])) {
-                $this->_throwError($key);
-            }
-            // get and return the reference to the sub-array with the current key
-            $subArray =& $this->array_access($array[$key], $keys);
-            return $subArray;
-        }
-        // return the match
-        return $array;
-    }
-
-    /**
-     * Validate the value can be null.
-     *
-     * @param  string|null $value
-     * @return bool
-     */
-    private function nullable($value)
-    {
-        return is_null($value) || $value === '';
-    }
-
-    /**
      * Set the rule of array and the subrules of array
      *
      * @param  string $field
@@ -294,16 +256,25 @@ class FormRequest extends Validator
      */
     private function _getArrayRule($field, $rules, $isNested = false)
     {
-        $arrayRuleName = 'array';
+        $arrayRuleName   = 'array';
+        $hasNullableRule = false;
+
         // check the rule of array if found
-        $arrayRule = array_filter(explode('|', $rules), function ($item) use ($arrayRuleName) {
+        $arrayRule = array_filter(explode('|', $rules), function ($item) use ($arrayRuleName, &$hasNullableRule) {
+            $hasNullableRule = $item == 'nullable';
             return substr($item, 0, strlen($arrayRuleName)) == $arrayRuleName;
         });
 
         if (!empty($arrayRule)) {
             $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
-            $valueChecked = $this->_getValueChecked($field, $isNested);
-
+            try {
+                $valueChecked = $this->_getValueChecked($field, $isNested);
+            } catch (Exception $e) { // field not found
+                $this->set_message($field, 'The {field} field is not found.');
+                return ['required', function ($value) use ($hasNullableRule) {
+                    return $hasNullableRule;
+                }];
+            }
             return [$arrayRuleName, function ($value) use ($valueChecked, $subrules, $arrayRuleName) {
                 // check it is an array
                 if (!is_array($valueChecked)) {
@@ -348,18 +319,6 @@ class FormRequest extends Validator
         return !empty($this->CI->form_validation->validation_data)
                     ? $this->CI->form_validation->validation_data
                     : array_merge($this->CI->input->post(), $this->CI->input->get());
-    }
-
-    /**
-     * Set the message for the given rule
-     *
-     * @param  string $ruleName
-     * @param  string $message
-     * @return void
-     */
-    private function set_message($ruleName, $message)
-    {
-        return $this->CI->form_validation->set_message($ruleName, $message);
     }
 
     /**
@@ -460,13 +419,71 @@ class FormRequest extends Validator
     }
 
     /**
+     * Get the value of array by the nested key string
+     *
+     * @param  array $array
+     * @param  array|string $keys
+     * @return mixed
+     */
+    private function &array_access(&$array, $keys)
+    {
+        // Check if the keys is a string
+        if (is_string($keys)) {
+            $firstChar = substr($keys, 0, 1);
+            if ($firstChar != '[') {
+                $pos = strpos($keys, '[');
+                $keys = $pos === false ? '['.$keys.']' : '["'.substr($keys, 0, $pos).'"]'.substr($keys, $pos);
+            }
+            // parse it to an array
+            $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
+        }
+        
+        // if it is the nested array, go deeply into array
+        if ($keys) {
+            $key = array_shift($keys);
+            // key not exist
+            if (!isset($array[$key])) {
+                $this->_throwError($key);
+            }
+            // get and return the reference to the sub-array with the current key
+            $subArray =& $this->array_access($array[$key], $keys);
+            return $subArray;
+        }
+        // return the match
+        return $array;
+    }
+
+    /**
+     * Set the message for the given rule
+     *
+     * @param  string $ruleName
+     * @param  string $message
+     * @return void
+     */
+    private function set_message($ruleName, $message)
+    {
+        return $this->CI->form_validation->set_message($ruleName, $message);
+    }
+
+    /**
+     * Validate the value can be null.
+     *
+     * @param  string|null $value
+     * @return bool
+     */
+    private function nullable($value)
+    {
+        return is_null($value) || $value === '';
+    }
+
+    /**
      * Validate the min rule
      *
      * @param  mixed $value
      * @param  mixed $min
      * @return bool
      */
-    public function min($value, $min = 0)
+    private function min($value, $min = 0)
     {
         if (!is_numeric($min) || !is_int((int)$min)) {
             return false;
@@ -491,7 +508,7 @@ class FormRequest extends Validator
      * @param  mixed $min
      * @return bool
      */
-    public function max($value, $max = 0)
+    private function max($value, $max = 0)
     {
         if (!is_numeric($max) || !is_int((int)$max)) {
             return false;
@@ -515,7 +532,7 @@ class FormRequest extends Validator
      * @param  mixed $min
      * @return bool
      */
-    public function size($value, $size = 0)
+    private function size($value, $size = 0)
     {
         if (!is_numeric($size) || !is_int((int)$size)) {
             return false;

@@ -56,7 +56,7 @@ class MY_Form_validation extends CI_Form_validation
      *
      * @return boolean
      */
-    public function array($input, $field = null)
+    public function array2($input, $field = null)
     {
         $params = !empty($this->validation_data) ? $this->validation_data : array_merge($this->CI->input->post(), $this->CI->input->get());
  

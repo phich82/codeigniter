@@ -27,13 +27,16 @@ class TestValidationRequest extends FormRequest
             'password'     => 'required|min_length[8]',
             'passconf'     => 'required|matches[password]',
             'email'        => 'is_email|in[jhphich@gmail.com,phich82@gmail.com]',
-            'levels[]'     => 'min_length[5]|max_length[32]|nullable',
-            'roles'        => 'array[roles]|nullable',
-            'roles[role]'  => 'array[roles[role]:min[1]:max[2]:size[2]]|nullable', //roles[role] = roles.role
-            'roles.role.*' => 'in_list[1,2,3,4]|nullable',
-            'colors'       => 'array[colors:min[5]]|nullable',
-            'colors.*'     => 'in_list[1,2,3,4]|nullable',
+            // 'levels[]'     => 'min_length[5]|max_length[32]|nullable',
+            // 'roles'        => 'array[roles]|nullable',
+            // 'roles[role]'  => 'array[roles[role]:min[1]:max[2]:size[2]]|nullable', //roles[role] = roles.role
+            // 'roles.role.*' => 'in_list[1,2,3,4]|nullable',
+            // 'colors'       => 'array[colors:min[5]]|nullable',
+            // 'colors.*'     => 'in_list[1,2,3,4]|nullable',
             'datetime'     => 'datetime[Ymd]',
+            'roles' => 'array|nullable',
+            'roles.role' => 'array[min[2]:max[3]]',
+
         ];
     }
 
