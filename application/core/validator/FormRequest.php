@@ -278,7 +278,7 @@ class FormRequest extends Validator
             $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
 
             // Note: CI will ignore the field that its value is an empty array.
-            // So, to overcome this when the subrules exist and the value is an empty array,
+            // So, to fix this when the subrules exist and the value is an empty array,
             // set its value to null
             if (!empty($subrules) && empty($valueChecked)) {
                 $this->set_null($field);
