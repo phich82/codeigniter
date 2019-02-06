@@ -35,7 +35,7 @@ class ApiController extends CI_Controller
             'colors' => [
                 ['color' => ['Y', 'R']],
                 ['color' => ['B', 'R']],
-                ['color' => []],
+                ['color' => ['', '']],
             ]
         ];
         $CI->form_validation->set_data($data);

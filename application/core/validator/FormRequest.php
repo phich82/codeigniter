@@ -25,7 +25,7 @@ class FormRequest extends Validator
     }
 
     /**
-     * Check whether the error has occured
+     * Check if the error occured
      *
      * @return bool
      */
@@ -35,7 +35,7 @@ class FormRequest extends Validator
     }
 
     /**
-     * Get error
+     * Get the error.
      *
      * @return array|null
      */
@@ -45,7 +45,7 @@ class FormRequest extends Validator
     }
 
     /**
-     * Validate form.
+     * Validate the form.
      *
      * @param  array $data
      * @return void
@@ -78,9 +78,8 @@ class FormRequest extends Validator
     }
 
     /**
-     * Get rules.
+     * Get the rules.
      *
-     * @param  array $customData
      * @return array
      */
     private function _getRules()
@@ -98,6 +97,7 @@ class FormRequest extends Validator
                 }
             }
         }
+
         return $config;
     }
 
@@ -133,10 +133,10 @@ class FormRequest extends Validator
     }
 
     /**
-     * Get the nested array rules: ['colors.4.color.*' => 'array']
+     * Get the nested array rules
+     * Example: ['colors.4.color.*' => 'array']
      *
      * @param  string $field
-     * @param  array  $params
      * @return array
      */
     private function _getNestedArrayFields($field)
@@ -146,7 +146,7 @@ class FormRequest extends Validator
         $firstElement = array_shift($parts);
         $rules = [$firstElement];
 
-        // for case, inputs are checkboxes
+        // in case the inputs are checkboxes, ignore them
         if (!array_key_exists($firstElement, $data)) {
             return [];
         }
@@ -155,7 +155,7 @@ class FormRequest extends Validator
     
         foreach ($parts as $part) {
             if ($part == '*') {
-                // key not exist
+                // key not exist, ignore it
                 if (empty(array_keys($currentValue)) || !isset($currentValue[array_keys($currentValue)[0]])) {
                     return [];
                 }
@@ -170,7 +170,7 @@ class FormRequest extends Validator
                 }
                 $rules = $temp;
             } else {
-                // key not exist
+                // key not exist, ignore it
                 if (!isset($currentValue[$part])) {
                     return [];
                 }
@@ -252,7 +252,7 @@ class FormRequest extends Validator
      *
      * @param  string $field
      * @param  array  $rules
-     * @return void
+     * @return array|null
      */
     private function _getArrayRule($field, $rules, $isNested = false)
     {
@@ -266,15 +266,30 @@ class FormRequest extends Validator
         });
 
         if (!empty($arrayRule)) {
-            $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
             try {
                 $valueChecked = $this->_getValueChecked($field, $isNested);
-            } catch (Exception $e) { // field not found
+            } catch (Exception $e) { // field not exist
                 $this->set_message($field, 'The {field} field is not found.');
                 return ['required', function ($value) use ($hasNullableRule) {
                     return $hasNullableRule;
                 }];
             }
+
+            $subrules = $this->_extractSubRules($this->_getSubRules($arrayRule));
+
+            // Note: CI will ignore the field that its value is an empty array.
+            // So, to overcome this when the subrules exist and the value is an empty array,
+            // set its value to null
+            if (!empty($subrules) && empty($valueChecked)) {
+                $this->set_null($field);
+                /* we do not need to check the error (field not exist) because it is checked above.
+                if ($this->set_null($field) === false) {
+                    return ['required', function ($value) use ($hasNullableRule) {
+                        return $hasNullableRule;
+                    }];
+                }*/
+            }
+
             return [$arrayRuleName, function ($value) use ($valueChecked, $subrules, $arrayRuleName) {
                 // check it is an array
                 if (!is_array($valueChecked)) {
@@ -318,7 +333,10 @@ class FormRequest extends Validator
         }
         return !empty($this->CI->form_validation->validation_data)
                     ? $this->CI->form_validation->validation_data
-                    : array_merge($this->CI->input->post(), $this->CI->input->get());
+                    : array_merge(
+                        $this->CI->input->post(),
+                        $this->CI->input->get()
+                    );
     }
 
     /**
@@ -396,7 +414,6 @@ class FormRequest extends Validator
      *
      * @param string $method
      * @param int    $size
-     *
      * @return string
      */
     private function _getMsgErrorBySubrule($method, $size)
@@ -424,6 +441,7 @@ class FormRequest extends Validator
      * @param  array $array
      * @param  array|string $keys
      * @return mixed
+     * @throws Exception
      */
     private function &array_access(&$array, $keys)
     {
@@ -438,7 +456,7 @@ class FormRequest extends Validator
             $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
         }
         
-        // if it is the nested array, go deeply into array
+        // if it is the nested array, go deeply
         if ($keys) {
             $key = array_shift($keys);
             // key not exist
@@ -446,8 +464,8 @@ class FormRequest extends Validator
                 $this->_throwError($key);
             }
             // get and return the reference to the sub-array with the current key
-            $subArray =& $this->array_access($array[$key], $keys);
-            return $subArray;
+            $subarray =& $this->array_access($array[$key], $keys);
+            return $subarray;
         }
         // return the match
         return $array;
@@ -466,7 +484,45 @@ class FormRequest extends Validator
     }
 
     /**
-     * Validate the value can be null.
+     * Set the empty array value of field to null
+     *
+     * @param  string $field
+     * @return bool
+     */
+    private function set_null($field)
+    {
+        try {
+            // the custom data
+            if (!empty($this->CI->form_validation->validation_data)) {
+                $vChecked = &$this->array_access($this->CI->form_validation->validation_data, $field);
+                // set the array value to null
+                $vChecked = null;
+                return true;
+            }
+            // the post request method
+            if (!empty($this->CI->input->post())) {
+                $vChecked = &$this->array_access($this->CI->input->post(), $field);
+                // set the array value to null
+                $vChecked = null;
+                return true;
+            }
+            // the get request method
+            if (!empty($this->CI->input->get())) {
+                $vChecked = &$this->array_access($this->CI->input->get(), $field);
+                // set the array value to null
+                $vChecked = null;
+                return true;
+            }
+            return true;
+        }
+        // field not exist
+        catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validate the nullable rule.
      *
      * @param  string|null $value
      * @return bool
