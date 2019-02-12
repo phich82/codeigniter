@@ -28,7 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "application/"
+            "App\\": "webapp/"
         }
     },
     "autoload-dev": {
