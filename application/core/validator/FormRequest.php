@@ -9,6 +9,7 @@ require 'Validator.php';
 class FormRequest extends Validator
 {
     public $error;
+    public $params;
     protected $request;
     protected $input;
     private $CI;
@@ -64,9 +65,12 @@ class FormRequest extends Validator
                 $this->CI->form_validation->set_data($data);
             }
 
+            // get all parameters from the request
+            $this->params = $this->_getDataValidation();
+
             // set delimiter
             $this->CI->form_validation->set_error_delimiters(null, null);
-        
+
             // validate form
             $this->CI->form_validation->set_rules($this->_getRules())->run();
 
@@ -86,7 +90,7 @@ class FormRequest extends Validator
     {
         $messages   = $this->_getMessages();
         $attributes = $this->attributes();
-        
+
         $config = [];
         foreach ($this->rules() as $field => $rules) {
             if (strpos($field, '.') === false) { // not nested field
@@ -152,7 +156,7 @@ class FormRequest extends Validator
         }
 
         $currentValue = $data[$firstElement];
-    
+
         foreach ($parts as $part) {
             if ($part == '*') {
                 // key not exist, ignore it
@@ -455,7 +459,7 @@ class FormRequest extends Validator
             // parse it to an array
             $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
         }
-        
+
         // if it is the nested array, go deeply
         if ($keys) {
             $key = array_shift($keys);

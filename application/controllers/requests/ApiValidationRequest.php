@@ -27,7 +27,7 @@ class ApiValidationRequest extends FormRequest
             //'roles.*.name' => 'in_list[A,B]',
             //'roles.*.name' => 'integer',
             //'colors.*.color.*' => 'in_list[A,B]',
-            'colors.*.color' => 'array[size[2]]',
+            'colors.*.color' => 'array[min[1]:max[2]]',
         ];
     }
 
