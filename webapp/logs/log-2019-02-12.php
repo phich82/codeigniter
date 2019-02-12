@@ -1553,3 +1553,36 @@ DEBUG - 2019-02-12 18:30:10 --> Config file loaded: C:\Users\huynhphat\Desktop\w
 INFO - 2019-02-12 18:30:10 --> Helper loaded: url_helper
 INFO - 2019-02-12 18:30:10 --> Helper loaded: asset_helper
 INFO - 2019-02-12 18:30:10 --> Controller Class Initialized
+ERROR - 2019-02-12 18:51:46 --> Could not find the specified $config['composer_autoload'] path: C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\vendor/autoload.php
+INFO - 2019-02-12 18:51:46 --> Config Class Initialized
+INFO - 2019-02-12 18:51:46 --> Hooks Class Initialized
+DEBUG - 2019-02-12 18:51:46 --> UTF-8 Support Enabled
+INFO - 2019-02-12 18:51:46 --> Utf8 Class Initialized
+INFO - 2019-02-12 18:51:46 --> URI Class Initialized
+INFO - 2019-02-12 18:51:46 --> Router Class Initialized
+INFO - 2019-02-12 18:51:46 --> Output Class Initialized
+INFO - 2019-02-12 18:51:46 --> Security Class Initialized
+DEBUG - 2019-02-12 18:51:46 --> Global POST, GET and COOKIE data sanitized
+INFO - 2019-02-12 18:51:47 --> Input Class Initialized
+INFO - 2019-02-12 18:51:47 --> Language Class Initialized
+INFO - 2019-02-12 18:51:47 --> Loader Class Initialized
+DEBUG - 2019-02-12 18:51:47 --> Config file loaded: C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\webapp\config/api.php
+INFO - 2019-02-12 18:51:47 --> Helper loaded: url_helper
+INFO - 2019-02-12 18:51:47 --> Helper loaded: asset_helper
+INFO - 2019-02-12 18:51:47 --> Controller Class Initialized
+INFO - 2019-02-12 18:51:47 --> Loader Class Initialized
+INFO - 2019-02-12 18:51:47 --> Config Class Initialized
+INFO - 2019-02-12 18:51:47 --> Hooks Class Initialized
+INFO - 2019-02-12 18:51:47 --> URI Class Initialized
+DEBUG - 2019-02-12 18:51:47 --> No URI present. Default controller set.
+INFO - 2019-02-12 18:51:47 --> Router Class Initialized
+INFO - 2019-02-12 18:51:47 --> Output Class Initialized
+INFO - 2019-02-12 18:51:47 --> Security Class Initialized
+DEBUG - 2019-02-12 18:51:47 --> Global POST, GET and COOKIE data sanitized
+INFO - 2019-02-12 18:51:47 --> Input Class Initialized
+INFO - 2019-02-12 18:51:47 --> Language Class Initialized
+INFO - 2019-02-12 18:51:47 --> Loader Class Initialized
+DEBUG - 2019-02-12 18:51:47 --> Config file loaded: C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\webapp\config/api.php
+INFO - 2019-02-12 18:51:47 --> Helper loaded: url_helper
+INFO - 2019-02-12 18:51:47 --> Helper loaded: asset_helper
+INFO - 2019-02-12 18:51:47 --> Controller Class Initialized
