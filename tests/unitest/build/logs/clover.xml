@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1549995120">
+  <project timestamp="1549995120">
+    <file name="C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\tests\unitest/controllers/Welcome_test.php">
+      <class name="Welcome_test" namespace="global" fullPackage="Welcome">
+        <metrics complexity="3" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
+      </class>
+      <line num="13" type="method" name="test_index" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="14" type="stmt" count="0"/>
+      <line num="15" type="stmt" count="0"/>
+      <line num="16" type="stmt" count="0"/>
+      <line num="17" type="stmt" count="0"/>
+      <line num="19" type="method" name="test_method_404" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="25" type="method" name="test_APPPATH" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <metrics loc="35" ncloc="27" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
+    </file>
+    <file name="C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\tests\unitest/models/Inventory_model_test.php">
+      <class name="Inventory_model_test" namespace="global" fullPackage="Inventory.model">
+        <metrics complexity="2" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="7" elements="9" coveredelements="9"/>
+      </class>
+      <line num="5" type="method" name="setUp" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="7" type="stmt" count="1"/>
+      <line num="8" type="stmt" count="1"/>
+      <line num="9" type="stmt" count="1"/>
+      <line num="10" type="stmt" count="1"/>
+      <line num="12" type="method" name="test_get_category_list" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="15" type="stmt" count="1"/>
+      <line num="19" type="stmt" count="1"/>
+      <line num="20" type="stmt" count="1"/>
+      <metrics loc="21" ncloc="21" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="7" elements="9" coveredelements="9"/>
+    </file>
+    <metrics files="2" loc="56" ncloc="48" classes="2" methods="5" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="7" elements="29" coveredelements="9"/>
+  </project>
+</coverage>

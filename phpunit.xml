@@ -1,16 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <phpunit
 	bootstrap="./tests/Bootstrap.php"
+	backupGlobals="true"
 	colors="true"
-	convertNoticesToExceptions="true"
-	convertWarningsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
 	stopOnError="false"
 	stopOnFailure="false"
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
-    verbose="true">
-    <testsuites>
+    verbose="false">
+	<testsuites>
+		<testsuite name="CodeIgniter Application Test Suite">
+			<directory suffix="test.php">./</directory>
+			<exclude>./tests/unitest/_ci_phpunit_test/</exclude>
+		</testsuite>
         <testsuite name="web">
 			<directory>tests/automation/web</directory>
 		</testsuite>
@@ -26,7 +29,17 @@
 	</testsuites>
 	<filter>
 		<whitelist>
-			<directory suffix=".php">../system/</directory>
+			<directory suffix=".php">./tests/unitest/controllers</directory>
+			<directory suffix=".php">./tests/unitest/models</directory>
+			<directory suffix=".php">./tests/unitest/views</directory>
+			<directory suffix=".php">./tests/unitest/libraries</directory>
+			<directory suffix=".php">./tests/unitest/helpers</directory>
+			<directory suffix=".php">./tests/unitest/hooks</directory>
 		</whitelist>
 	</filter>
+	<!-- <logging>
+		<log type="coverage-html" target="./tests/unitest/build/coverage"/>
+		<log type="coverage-clover" target="./tests/unitest/build/logs/clover.xml"/>
+		<log type="junit" target="./tests/unitest/build/logs/junit.xml" logIncompleteSkipped="false"/>
+	</logging> -->
 </phpunit>

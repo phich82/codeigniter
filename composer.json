@@ -23,7 +23,8 @@
 		"phpunit/phpunit": "6.5.9",
 		"phpunit/phpunit-selenium": "4.1",
 		"fzaninotto/faker": "^1.8",
-		"facebook/webdriver": "^1.6"
+		"facebook/webdriver": "^1.6",
+		"kenjis/ci-phpunit-test": "^0.16.1"
     },
     "autoload": {
         "psr-4": {

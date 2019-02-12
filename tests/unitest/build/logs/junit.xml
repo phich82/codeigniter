@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="GitHubTest" file="C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\tests\automation\web\GithubTest.php" tests="2" assertions="4" errors="0" failures="0" skipped="0" time="12.734789">
+    <testcase name="testGitHubHome" class="GitHubTest" classname="GitHubTest" file="C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\tests\automation\web\GithubTest.php" line="33" assertions="1" time="5.313296"/>
+    <testcase name="testSearch" class="GitHubTest" classname="GitHubTest" file="C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\codeigniter\tests\automation\web\GithubTest.php" line="39" assertions="3" time="7.421493"/>
+  </testsuite>
+</testsuites>
