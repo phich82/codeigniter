@@ -40,6 +40,7 @@ class CIPHPUnitTest
 		require __DIR__ . '/autoloader.php';
 
 		require TESTPATH . 'TestCase.php';
+		require TESTPATH . 'MyTestCase.php';
 
 		$db_test_case_file = TESTPATH . 'DbTestCase.php';
 		if (is_readable($db_test_case_file))

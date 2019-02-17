@@ -1,10 +1,11 @@
 <?php
 
-class RsvSalesServiceTest extends TestCase
+class RsvSalesServiceTest extends MyTestCase
 {
     public function setUp()
     {
-        $this->resetInstance();
+        parent::setUp();
+
         $this->CI->load->library('api/Rsv_sales_service', null, 'rsvSalesService');
         $this->rsvSalesService = $this->CI->rsvSalesService;
     }
@@ -14,6 +15,8 @@ class RsvSalesServiceTest extends TestCase
         $body = [1, 2];
         $headers = [];
         $result = $this->rsvSalesService->createOrders($body, $headers);
+
         $this->assertTrue($result);
+        $this->seeInDatabase('users', ['username' => 'admin']);
     }
 }

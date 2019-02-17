@@ -74,3 +74,23 @@ No.	FUNCTION	    DESCRIPTION	                            PARAMETER(S)        USA
 
             Ex: php index.php tools seed
             => Run all seeder files in DatabaseSeeder.php
+
+# 6. How to run tests
+    vendor/bin/phpunit --testdox --testsuite unitest:
+    vendor/bin/phpunit --testdox --testsuite unitest:all
+    vendor/bin/phpunit --testdox --testsuite unitest:controller
+    vendor/bin/phpunit --testdox --testsuite unitest:model
+    vendor/bin/phpunit --testdox --testsuite unitest:service
+
+# 7. Customize the tests folder (tests => tests/unitest)
+## Open the tests/unitest/Bootstrap.php file, replace the line 235 "define('TESTPATH', __dir__.DIRECTORY_SEPARATOR);" with the following line:
+
+    define('TESTPATH', __dir__.DIRECTORY_SEPARATOR.'unitest'.DIRECTORY_SEPARATOR);
+
+## Next, find to the line 369 "require __DIR__ . '/_ci_phpunit_test/CIPHPUnitTest.php';" and replace it with the following line:
+
+    require __DIR__ . '/unitest/_ci_phpunit_test/CIPHPUnitTest.php';
+
+##   Open the CIPHPUnitTest.php, insert the following line right after the line 42 "require TESTPATH . 'TestCase.php';":
+
+	require TESTPATH . 'MyTestCase.php';

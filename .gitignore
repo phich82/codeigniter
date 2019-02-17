@@ -35,3 +35,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 .history/
 .vscode/
 phpcs.xml
+webapp/logs

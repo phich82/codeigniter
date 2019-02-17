@@ -1,6 +1,6 @@
 <?php
 
-class RsvSalesServiceTest extends TestCase
+class RsvSalesServiceTest2 extends TestCase
 {
     public function setUp()
     {

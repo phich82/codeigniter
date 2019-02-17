@@ -232,6 +232,7 @@ switch (ENVIRONMENT)
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
 	// Path to the test directory containing all the test files.
+	//define('TESTPATH', __dir__.DIRECTORY_SEPARATOR);  // Should be the folder this `Bootstrap.php` file is in.
 	define('TESTPATH', __dir__.DIRECTORY_SEPARATOR.'unitest'.DIRECTORY_SEPARATOR);  // Should be the folder this `Bootstrap.php` file is in.
 
 	// Path to the system directory
@@ -240,7 +241,7 @@ switch (ENVIRONMENT)
 	// Path to the front controller (this file) directory
 	define('FCPATH', realpath(dirname(__FILE__).'/../..').DIRECTORY_SEPARATOR);
 
-	// Name of the "system" directory
+    // Name of the "system" directory
 	define('SYSDIR', basename(BASEPATH));
 
 	// The path to the "application" directory
@@ -362,7 +363,7 @@ MonkeyPatchManager::init([
 
 // If you want to change the path of tests directory, set TESTPATH
 /*
-define('TESTPATH', APPPATH.'tests'.DIRECTORY_SEPARATOR);
+define('TESTPATH', APPPATH.'tests/'.DIRECTORY_SEPARATOR);
 */
 
 require __DIR__ . '/unitest/_ci_phpunit_test/CIPHPUnitTest.php';
