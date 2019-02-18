@@ -387,7 +387,7 @@ class MY_Form_validation extends CI_Form_validation
                 // mapping to column if any
                 $where[count($split) === 2 ? $split[1] : $field] = $dataValidation[$field];
             }
-var_dump($this->error_array());
+
             $this->CI->load->database();
             $rows = $this->CI->db->from($table)->where($where)->count_all_results();
 
