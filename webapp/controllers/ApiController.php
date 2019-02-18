@@ -36,6 +36,16 @@ class ApiController extends CI_Controller
                 ['color' => ['Y', 'R']],
                 ['color' => ['B', 'R']],
                 ['color' => ['']],
+            ],
+            'store_no' => 1,
+            'order_status' => 1,
+            'messages' => [
+                [
+                    'username' => 'cremin.nat'
+                ],
+                [
+                    'username' => 'bahringer.elsa'
+                ]
             ]
         ];
         $CI->form_validation->set_data($data);

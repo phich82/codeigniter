@@ -28,6 +28,7 @@ class ApiValidationRequest extends FormRequest
             //'roles.*.name' => 'integer',
             //'colors.*.color.*' => 'in_list[A,B]',
             'colors.*.color' => 'array[min[1]:max[2]]',
+            'messages.*.username' => 'exist_by[messages:username=>name:store_no=>store:order_status=>status]'
         ];
     }
 

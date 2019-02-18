@@ -343,4 +343,65 @@ class MY_Form_validation extends CI_Form_validation
         $this->set_message('datetime', 'The {field} field must have format [' . $format . ']');
         return FALSE;
     }
+
+    /**
+     * Validate the rule for checking the record exists in database by the given parameters
+     *
+     * @param  mixed $value
+     * @param  string $params [exist_by[orders:company_code:store_no]]
+     *
+     * @return bool
+     */
+    public function exist_by($value, $params)
+    {
+        if (empty($params)) {
+            $this->set_message('exist_by', 'The parameters [table, fields] for the rule [exist_by] are missed.');
+            return false;
+        }
+
+        $params = explode(':', $params);
+        $table  = array_shift($params);
+
+        if (!empty($params)) {
+            $dataValidation = !empty($this->validation_data) ? $this->validation_data : array_merge(
+                $this->CI->input->post(),
+                $this->CI->input->get()
+            );
+
+            $where = [];
+
+            // for this field
+            $first = explode('=>', array_shift($params));
+            // mapping to column if any
+            $where[count($first) === 2 ? $first[1] : $first[0]] = $value;
+
+            // for other fields if any
+            foreach ($params as $param) {
+                $split = explode('=>', $param);
+                $field = $split[0];
+                // field not found
+                if (!isset($dataValidation[$field])) {
+                    $this->set_message('exist_by', 'The field ['.$field.'] for the rule [exist_by] does not found.');
+                    return false;
+                }
+                // mapping to column if any
+                $where[count($split) === 2 ? $split[1] : $field] = $dataValidation[$field];
+            }
+var_dump($this->error_array());
+            $this->CI->load->database();
+            $rows = $this->CI->db->from($table)->where($where)->count_all_results();
+
+            // not found (no exist)
+            if ($rows <= 0) {
+                $this->set_message('exist_by', 'This record for the rule [exist_by] does not found.');
+                return false;
+            }
+
+            return true;
+        }
+
+        // missing the where conditions
+        $this->set_message('exist_by', 'The parameters [fields] for the rule [exist_by] are missed.');
+        return false;
+    }
 }
