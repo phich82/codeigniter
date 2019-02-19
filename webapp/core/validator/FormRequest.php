@@ -97,12 +97,74 @@ class FormRequest extends Validator
                 $config[] = $this->_getRuleConfig($field, $attributes, $rules, $messages);
             } else { // the nested field
                 foreach ($this->_getNestedArrayFields($field) as $nestedField) {
-                    $config[] = $this->_getRuleConfig($nestedField, $attributes, $rules, $messages, true);
+                    $rulesChecked = $this->_processNestedFieldsInRules($nestedField, $rules);
+                    $config[] = $this->_getRuleConfig($nestedField, $attributes, $rulesChecked, $messages, true);
                 }
             }
         }
 
         return $config;
+    }
+
+    /**
+     * Process the nested fields in rules
+     *
+     * @param  string $nestedFieldKey
+     * @param  string $rulesValue
+     *
+     * @return string
+     */
+    private function _processNestedFieldsInRules($nestedFieldKey, $rulesValue)
+    {
+        $star  = '*';
+        // the nested fields not found
+        if (strpos($rulesValue, $star) === false) {
+            return $rulesValue;
+        }
+
+        $dot   = '.';
+        $colon = ':';
+        $slash = '|';
+        $arrow = '=>';
+        $bracketL = '[';
+        $bracketR = ']';
+
+        // extract the keys of the nested field
+        $keysRoot   = explode($dot, str_replace($bracketL, $dot, str_replace($bracketR.$bracketL, $dot, rtrim($nestedFieldKey, $bracketR))));
+        $rulesSplit = explode($slash, $rulesValue);
+        $out = [];
+
+        foreach ($rulesSplit as $ruleRight) {
+            $ruleNoBrackets = preg_replace('/(.+)\[(.*)\]$/i', '$1'.$colon.'$2', $ruleRight);
+            $parts = explode($colon, $ruleNoBrackets);
+            $ruleName = array_shift($parts);
+
+            // build a new rule string
+            $rule = $ruleName.$bracketL;
+            // loop the nested keys
+            foreach ($parts as $part) {
+                // check the mapping key if any
+                $split = explode($arrow, $part);
+                // extract the parts of this key
+                $keys  = explode($dot, $split[0]);
+                // check whether it is the nested key
+                if (count($keysRoot) === count($keys)) {
+                    foreach ($keysRoot as $k => $v) {
+                        // replace '*' with the numerical value matches to the nested position of key in the nested root field
+                        if (is_numeric($v) && $keys[$k] == $star) {
+                            $keys[$k] = $v;
+                        }
+                    }
+                    // append to the rule string
+                    $rule .= implode($dot, $keys).(count($split) === 2 ? $arrow.$split[1] : '').$colon;
+                } else {
+                    // append to the rule string
+                    $rule .= $part.$colon;
+                }
+            }
+            $out[] = rtrim($rule, $colon).$bracketR;
+        }
+        return implode($slash, $out);
     }
 
     /**

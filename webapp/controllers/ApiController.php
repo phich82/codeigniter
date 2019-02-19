@@ -41,10 +41,12 @@ class ApiController extends CI_Controller
             'order_status' => 1,
             'messages' => [
                 [
-                    'username' => 'cremin.nat'
+                    'username' => 'cremin.nat',
+                    'age' => 10
                 ],
                 [
-                    'username' => 'bahringer.elsa'
+                    'username' => 'bahringer.elsa',
+                    'age' => 15
                 ]
             ]
         ];

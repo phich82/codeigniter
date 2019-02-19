@@ -393,7 +393,7 @@ class MY_Form_validation extends CI_Form_validation
 
             // not found (no exist)
             if ($rows <= 0) {
-                $this->set_message('exist_by', 'This record for the rule [exist_by] does not found.');
+                $this->set_message('exist_by', 'This record ['.$value.'] does not found.');
                 return false;
             }
 
@@ -403,5 +403,79 @@ class MY_Form_validation extends CI_Form_validation
         // missing the where conditions
         $this->set_message('exist_by', 'The parameters [fields] for the rule [exist_by] are missed.');
         return false;
+    }
+
+    public function test($value, $params)
+    {
+        if (empty($params)) {
+            $this->CI->form_validation->set_message('test', 'The parameters of the rule [test] are missed.');
+            return false;
+        }
+
+        $fields = explode(':', $params);
+
+        if (!empty($fields)) {
+            $dataValidation = !empty($this->validation_data) ? $this->validation_data : array_merge(
+                $this->CI->input->post(),
+                $this->CI->input->get()
+            );
+            foreach ($fields as $field) {
+                $split = explode('=>', $field);
+                $fieldThis = $split[0];
+                // not the nested field but the field not found
+                if (strpos($fieldThis, '.') === false && !isset($dataValidation[$fieldThis])) {
+                    $this->CI->form_validation->set_message('test', 'The field ['.$fieldThis.'] for the rule [exist_by] does not found.');
+                    return false;
+                }
+                // the nested field but the values are different
+                if (strpos($fieldThis, '.') !== false) {
+                    $valueChecked = &$this->array_access($dataValidation, explode('.', $fieldThis));
+                    if ($value != $valueChecked) {
+                        $this->CI->form_validation->set_message('test', 'The values ['.$value.', '.$valueChecked.'] are not same.');
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        // missing the where conditions
+        $this->CI->form_validation->set_message('test', 'The parameters of the rule [test] are missed.');
+        return false;
+    }
+
+    /**
+     * Get the value of array by the nested key string
+     *
+     * @param  array $array
+     * @param  array|string $keys
+     * @return mixed
+     * @throws Exception
+     */
+    private function &array_access(&$array, $keys)
+    {
+        // Check if the keys is a string
+        if (is_string($keys)) {
+            $firstChar = substr($keys, 0, 1);
+            if ($firstChar != '[') {
+                $pos = strpos($keys, '[');
+                $keys = $pos === false ? '['.$keys.']' : '["'.substr($keys, 0, $pos).'"]'.substr($keys, $pos);
+            }
+            // parse it to an array
+            $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
+        }
+
+        // if it is the nested array, go deeply
+        if ($keys) {
+            $key = array_shift($keys);
+            // key not exist
+            if (!isset($array[$key])) {
+                throw new Exception("Field [$key] is invalid.");
+            }
+            // get and return the reference to the sub-array with the current key
+            $subarray =& $this->array_access($array[$key], $keys);
+            return $subarray;
+        }
+        // return the match
+        return $array;
     }
 }
