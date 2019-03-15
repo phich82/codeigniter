@@ -1,0 +1,56 @@
+2019-03-15 06:46:50,790 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2019-03-15 06:46:50,823 INFO o.a.j.JMeter: Loading user properties from: C:\tooltest\apache-jmeter-5.0\bin\user.properties
+2019-03-15 06:46:50,824 INFO o.a.j.JMeter: Loading system properties from: C:\tooltest\apache-jmeter-5.0\bin\system.properties
+2019-03-15 06:46:50,833 INFO o.a.j.JMeter: Copyright (c) 1998-2018 The Apache Software Foundation
+2019-03-15 06:46:50,833 INFO o.a.j.JMeter: Version 5.0 r1840935
+2019-03-15 06:46:50,833 INFO o.a.j.JMeter: java.version=11.0.1
+2019-03-15 06:46:50,833 INFO o.a.j.JMeter: java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+2019-03-15 06:46:50,833 INFO o.a.j.JMeter: os.name=Windows 8.1
+2019-03-15 06:46:50,834 INFO o.a.j.JMeter: os.arch=amd64
+2019-03-15 06:46:50,834 INFO o.a.j.JMeter: os.version=6.3
+2019-03-15 06:46:50,834 INFO o.a.j.JMeter: file.encoding=Cp1252
+2019-03-15 06:46:50,834 INFO o.a.j.JMeter: Max memory     =1073741824
+2019-03-15 06:46:50,834 INFO o.a.j.JMeter: Available Processors =4
+2019-03-15 06:46:50,849 INFO o.a.j.JMeter: Default Locale=English (EN)
+2019-03-15 06:46:50,850 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2019-03-15 06:46:50,850 INFO o.a.j.JMeter: JMeterHome=C:\tooltest\apache-jmeter-5.0
+2019-03-15 06:46:50,850 INFO o.a.j.JMeter: user.dir  =C:\Users\huynhphat\Desktop\web\test\jmeter
+2019-03-15 06:46:50,851 INFO o.a.j.JMeter: PWD       =C:\Users\huynhphat\Desktop\web\test\jmeter
+2019-03-15 06:46:55,374 INFO o.a.j.JMeter: IP: 192.168.251.2 Name: PC-2019 FullName: PC-2019
+2019-03-15 06:46:55,391 INFO o.a.j.s.FileServer: Default base='C:\Users\huynhphat\Desktop\web\test\jmeter'
+2019-03-15 06:46:55,396 INFO o.a.j.s.FileServer: Set new base='C:\Users\huynhphat\Desktop\web\test\jmeter'
+2019-03-15 06:46:55,629 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2019-03-15 06:46:55,656 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2019-03-15 06:46:55,660 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2019-03-15 06:46:55,665 INFO o.a.j.s.SaveService: Loading file: C:\Users\huynhphat\Desktop\web\test\jmeter\UploadFileTest.jmx
+2019-03-15 06:46:55,732 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2019-03-15 06:46:55,732 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2019-03-15 06:46:55,732 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2019-03-15 06:46:55,732 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2019-03-15 06:46:55,732 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2019-03-15 06:46:55,733 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2019-03-15 06:46:55,775 INFO o.a.j.JMeter: Creating summariser <summary>
+2019-03-15 06:46:55,783 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2019-03-15 06:46:55,789 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2019-03-15 06:46:55,789 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2019-03-15 06:46:55,800 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2019-03-15 06:46:55,800 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2019-03-15 06:46:56,239 INFO o.a.j.JMeter: Running test (1552607216239)
+2019-03-15 06:46:56,260 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : Thread Group
+2019-03-15 06:46:56,260 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group Thread Group.
+2019-03-15 06:46:56,260 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2019-03-15 06:46:56,261 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=1 perThread=1000.0 delayedStart=false
+2019-03-15 06:46:56,265 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2019-03-15 06:46:56,265 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2019-03-15 06:46:56,268 INFO o.a.j.t.JMeterThread: Thread started: Thread Group 1-1
+2019-03-15 06:46:56,285 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = PC-2019
+2019-03-15 06:46:56,291 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2019-03-15 06:46:56,292 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2019-03-15 06:46:56,292 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to ISO-8859-1
+2019-03-15 06:46:56,293 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2019-03-15 06:46:56,293 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2019-03-15 06:46:56,375 INFO o.a.j.s.FileServer: Stored: C:\Users\huynhphat\Downloads\png_stand_for_1078116.png
+2019-03-15 06:46:59,292 INFO o.a.j.t.JMeterThread: Thread is done: Thread Group 1-1
+2019-03-15 06:46:59,292 INFO o.a.j.t.JMeterThread: Thread finished: Thread Group 1-1
+2019-03-15 06:46:59,293 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2019-03-15 06:46:59,302 INFO o.a.j.r.Summariser: summary =      1 in 00:00:03 =    0.3/s Avg:  2914 Min:  2914 Max:  2914 Err:     0 (0.00%)

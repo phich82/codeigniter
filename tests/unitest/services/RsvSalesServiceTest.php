@@ -17,6 +17,9 @@ class RsvSalesServiceTest extends MyTestCase
         $result = $this->rsvSalesService->createOrders($body, $headers);
 
         $this->assertTrue($result);
+        $this->dbTestCase->close();
+        $this->dbTestCase->reconnect();
+        //var_dump($this->dbTestCase->errors());
         $this->seeInDatabase('users', ['username' => 'admin']);
     }
 }

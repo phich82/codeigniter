@@ -1,0 +1,4 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1552492089411,13076,HTTP Request,200,OK,Thread Group 1-1,text,true,,42716,275,1,1,http://lifecharger.org/when-in-doubt-do-this/,5528,0,529
+1552492089411,5528,HTTP Request-0,301,Moved Permanently,Thread Group 1-1,text,true,,1018,137,1,1,http://lifecharger.org//when-in-doubt-do-this,5528,0,529
+1552492094946,7541,HTTP Request-1,200,OK,Thread Group 1-1,text,true,,41698,138,1,1,http://lifecharger.org/when-in-doubt-do-this/,5943,0,251

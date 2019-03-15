@@ -1,0 +1,9 @@
+S1: cd C:\tooltest\apache-jmeter-5.0\bin\
+S2: jmeter -n -t [location of your jmeter test script] -l [location of the result file]
+-n: non gui mode
+-t: location of jmeter script
+-l: location of the result file
+
+ - non-windows: sh jmeter -n -t "C:\Users\huynhphat\Desktop\web\test\jmeter\run_from_cli.jmx" -l "C:\Users\huynhphat\Desktop\web\test\jmeter\run_from_cli.csv"
+
+ - On windows command line: jmeter -n -t "C:\Users\huynhphat\Desktop\web\test\jmeter\run_from_cli.jmx" -l "C:\Users\huynhphat\Desktop\web\test\jmeter\run_from_cli.csv"

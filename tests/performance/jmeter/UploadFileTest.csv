@@ -1,0 +1,2 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1552607216374,2914,HTTP Request,200,OK,Thread Group 1-1,text,true,,9530,179981,1,1,http://www.tinyupload.com//,2912,0,365

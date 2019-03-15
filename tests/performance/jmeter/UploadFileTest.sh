@@ -1,0 +1,1 @@
+sh "C:\tooltest\apache-jmeter-5.0\bin\jmeter" -n -t "C:\Users\huynhphat\Desktop\web\test\jmeter\UploadFileTest.jmx" -l "C:\Users\huynhphat\Desktop\web\test\jmeter\UploadFileTest.csv"
