@@ -1,0 +1,1 @@
+C:\tooltest\apache-jmeter-5.0\bin\jmeter -n -t C:\Users\huynhphat\Desktop\web\test\jmeter\CreateReportHtmlFromCLI.jmx -l C:\Users\huynhphat\Desktop\web\test\jmeter\CreateReportHtmlFromCLI.csv -e -o C:\Users\huynhphat\Desktop\web\test\jmeter\HTMLReports\
