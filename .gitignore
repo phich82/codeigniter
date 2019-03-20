@@ -32,7 +32,10 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tests/results/
 /tests/selenium/
 
-.history/
-.vscode/
+.history
+.vscode
+.sonarlint
+.scannerwork
+
 phpcs.xml
 webapp/logs
