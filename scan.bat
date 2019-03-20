@@ -5,6 +5,9 @@ set _PROJECT_ROOT_PATH="C:\Users\huynhphat\Desktop\web\learning\php\CodeIgniter\
 set _SOURCES_PATH=".\webapp\controllers\requests"
 set _PROJECT_KEY="my-project"
 
-%_SONAR_SCANNER% -Dsonar.projectKey=%_PROJECT_KEY% -Dsonar.projectBaseDir=%_PROJECT_ROOT_PATH% -Dsonar.sources=%_SOURCES_PATH%
+REM  Get path from cli if entered (%1: 2nd argument)
+if not "%1" == "" set _SOURCES_PATH="%1"
 
-pause
+echo INFO: Source dir: %_SOURCES_PATH%
+
+%_SONAR_SCANNER% -Dsonar.projectKey=%_PROJECT_KEY% -Dsonar.projectBaseDir=%_PROJECT_ROOT_PATH% -Dsonar.sources=%_SOURCES_PATH%
