@@ -326,6 +326,9 @@ $config['cache_query_string'] = FALSE;
 */
 $config['encryption_key'] = '1234567890123456789';
 
+$config['app_key'] = '4ab8dpFIEbOKh+M87pLeasTVQ3RWtby5xSE8U04fUCA=';
+$config['cipher'] = 'AES-256-CBC';
+
 /*
 |--------------------------------------------------------------------------
 | Session Variables

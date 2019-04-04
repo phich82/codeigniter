@@ -11,7 +11,9 @@ require_once APPPATH.'Api/Exceptions/RsvSalesException.php';
 
 use GuzzleHttp\Client;
 use App\Api\Contracts\RsvSaleContract;
+use Psr\Http\Message\ResponseInterface;
 use App\Api\Exceptions\RsvSalesException;
+use GuzzleHttp\Exception\RequestException;
 
 class RsvSale implements RsvSaleContract
 {
@@ -22,7 +24,7 @@ class RsvSale implements RsvSaleContract
     /**
      * @var array
      */
-    protected $params;
+    protected $params = [];
     /**
      * The cache instance
      * @var CI_Cache
@@ -38,17 +40,17 @@ class RsvSale implements RsvSaleContract
     public function __construct($config, $cache = null)
     {
         $this->client = new Client([
-            'base_uri' => 'https://jsonplaceholder.typicode.com',//$config['base_uri'],
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ],
+            'base_uri' => 'https://reqres.in/',// 'https://jsonplaceholder.typicode.com',//$config['base_uri'],
+            // 'headers' => [
+            //     'Content-Type' => 'application/json',
+            //     'Accept' => 'application/json',
+            // ],
             'http_errors' => false,
             'timeout' => 60.0,
             'verify' => FCPATH.'cert/cacert.pem',
         ]);
 
-        $this->setDefaultParams($config['common']);
+        //$this->setDefaultParams($config['common'] ?? []);
         $this->cache = $cache;
     }
 
@@ -157,5 +159,20 @@ class RsvSale implements RsvSaleContract
         $this->params = [
             'common' => $params,
         ];
+    }
+
+    public function postAsync($path, $params = [])
+    {
+        $params = array_merge($this->params, $params);
+        log_message('info', 'Async API Request: ' . $path . PHP_EOL . json_encode($params));
+        return $this->client->postAsync($path, ['json' => $params]);
+        //return $this->client->requestAsync('POST', $path, ['json' => $params]);
+        //return $this->client->getAsync($path);
+
+        // $request = new \GuzzleHttp\Psr7\Request('GET', $path);
+        // $this->client->sendAsync($request)->then(function ($response) {
+        //     log_message('info', 'Async API Response: ' . $response->getBody());
+        //     echo 'I completed! ' . $response->getBody();
+        // })->wait();
     }
 }

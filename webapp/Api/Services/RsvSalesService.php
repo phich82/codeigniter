@@ -57,4 +57,27 @@ class RsvSalesService
         }
         return false;
     }
+
+    public function postAsync($params = [])
+    {
+        //$this->apiRsvSale->postAsync('/api/users?page=2', $params);
+        $promise = $this->apiRsvSale->postAsync('/api/users', $params);
+        // $promise = $this->apiRsvSale->postAsync('/api/users?page=2', $params);
+        // var_dump($promise);
+        // $promise->wait();
+        $promise->then(
+            function ($response) {
+                //var_dump($response);
+                //$r = json_decode($response->getBody()->getContents(), true);
+                log_message('info', 'Async response: '. $response->getBody());
+            },
+            function ($e) {
+                var_dump($e);
+                echo $e->getMessage() . "\n";
+                echo $e->getRequest()->getMethod();
+
+                log_message('info', 'Async response: '. json_encode($e));
+            }
+        )->wait();
+    }
 }

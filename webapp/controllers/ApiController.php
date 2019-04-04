@@ -94,6 +94,16 @@ class ApiController extends CI_Controller
         echo json_encode(['result' => $result]);
     }
 
+    public function post_async()
+    {
+        $this->apiRsvSalesService->postAsync([
+            "name" => "morpheus",
+            "job"  => "leader"
+        ]);
+        log_message('info', 'Last Async API Request');
+        echo 'Post Async';
+    }
+
     /**
      * Check the specified fields whether they do exist in database
      *

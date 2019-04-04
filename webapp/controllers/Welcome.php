@@ -20,6 +20,11 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
+        $this->load->library('Crypt_rsv');
+        $hashed = $this->crypt_rsv->encrypt('u0019003');
+        var_dump($hashed);
+        var_dump($this->crypt_rsv->decrypt($hashed));
+        var_dump($this->crypt_rsv->verify('u0019003', $hashed));
 		$this->load->view('welcome_message');
 	}
 }
