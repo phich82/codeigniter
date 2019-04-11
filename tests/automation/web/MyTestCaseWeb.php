@@ -1,7 +1,7 @@
 <?php
 
 
-class MyTestCase extends PHPUnit_Extensions_Selenium2TestCase
+class MyTestCaseWeb extends PHPUnit_Extensions_Selenium2TestCase
 {
     protected $host = 'localhost';
     protected $port = 8888;

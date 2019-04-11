@@ -11,12 +11,12 @@
     verbose="false">
 	<testsuites>
         <testsuite name="unitest">
-			<directory suffix=".php">tests/unitest</directory>
 			<exclude>tests/unitest/_ci_phpunit_test/</exclude>
+			<directory>tests/unitest</directory>
 		</testsuite>
         <testsuite name="unitest:all">
-			<directory suffix=".php">tests/unitest</directory>
 			<exclude>tests/unitest/_ci_phpunit_test/</exclude>
+			<directory>tests/unitest</directory>
 		</testsuite>
 		<testsuite name="unitest:service">
 			<directory suffix=".php">tests/unitest/services</directory>
@@ -28,12 +28,19 @@
 			<directory suffix=".php">tests/unitest/controllers</directory>
 		</testsuite>
         <testsuite name="web">
-			<directory suffix=".php">tests/automation/web</directory>
+            <exclude>tests/automation/web/pages</exclude>
+            <exclude>tests/automation/web/traits</exclude>
+            <exclude>
+                <file>tests/automation/web/MyTestCaseWeb.php</file>
+            </exclude>
+			<directory>tests/automation/web</directory>
 		</testsuite>
         <testsuite name="mobile">
 			<directory>tests/automation/mobile</directory>
 		</testsuite>
 		<testsuite name="android">
+            <exclude>tests/automation/mobile/android/apps</exclude>
+            <exclude>tests/automation/mobile/android/files</exclude>
 			<directory>tests/automation/mobile/android</directory>
 		</testsuite>
         <testsuite name="ios">

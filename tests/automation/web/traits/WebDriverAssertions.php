@@ -12,10 +12,10 @@ trait WebDriverAssertions
     protected function assertElementAppeared($by, $message = '')
     {
         try {
-            $element = $this->webDriver->wait(10)->until(
-                \WebDriverExpectedCondition::visibilityOfElementLocated($by)
+            $element = $this->driver->wait(10)->until(
+                WebDriverExpectedCondition::visibilityOfElementLocated($by)
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $element = null;
         }
 
@@ -24,8 +24,8 @@ trait WebDriverAssertions
 
     protected function assertElementNotFound($by)
     {
-        $els = $this->webDriver->findElements($by);
-        if (count($els)) {
+        $elements = $this->driver->findElements($by);
+        if (count($elements)) {
             $this->fail("Unexpectedly element was found");
         }
         // increment assertion counter

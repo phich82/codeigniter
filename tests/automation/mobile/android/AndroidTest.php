@@ -61,8 +61,9 @@ class AndroidTest extends PHPUnit_Extensions_AppiumTestCase
     public function testPullFile()
     {
         $data = $this->pullFile(realpath(dirname(__FILE__).'/files/pull/strings.json'));
-        $strings = json_decode(base64_decode($data), true);
-        $this->assertEquals('You can\'t wipe my data, you are a monkey!', $strings['monkey_wipe_data']);
+        var_dump($data);die();
+        //$strings = json_decode(base64_decode($data), true);
+        //$this->assertEquals('You can\'t wipe my data, you are a monkey!', $strings['monkey_wipe_data']);
     }
     public function testPushFile()
     {

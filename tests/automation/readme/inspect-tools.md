@@ -10,4 +10,4 @@
    => https://www.toolsqa.com/mobile-automation/appium/inspect-elements-of-mobile-web-application/
 
 
-chrome://inspect/#devices
+    chrome://inspect/#devices

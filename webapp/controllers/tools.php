@@ -362,7 +362,7 @@ class Seeder
             echo 'Seed successfully.'.PHP_EOL;
             return;
         }
-        throw new Exception("Unanle read file [$file].");
+        throw new Exception("Unable read file [$file].");
     }
 
     /**
