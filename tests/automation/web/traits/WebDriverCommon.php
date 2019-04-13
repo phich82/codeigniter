@@ -1,5 +1,5 @@
 <?php
-namespace tests\automation\web\traits;
+namespace Tests\Automation\Web\Traits;
 
 use Facebook\WebDriver\WebDriverBy;
 /**

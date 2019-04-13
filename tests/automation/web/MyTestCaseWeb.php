@@ -1,27 +1,79 @@
 <?php
 
+namespace Tests\Automation\Web;
 
-class MyTestCaseWeb extends PHPUnit_Extensions_Selenium2TestCase
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\WebDriverCapabilityType;
+
+
+class MyTestCaseWeb extends \PHPUnit\Framework\TestCase
 {
+    protected $protocol = 'http';
     protected $host = 'localhost';
     protected $port = 8888;
-    protected $hostSelenium = '';
-    protected $portSelenium = 4444;
-    public $browser = 'chrome';
-    public $urlRoot;
 
+    protected $protocolRemote = 'http';
+    protected $hostRemote = 'localhost';
+    protected $portRemote = 4444;
+
+    protected $url;
+    protected $browser = 'chrome';
+
+    /**
+     * @var \RemoteWebDriver
+     */
+    protected $driver;
+
+    /**
+     * setUp
+     *
+     * @return void
+     */
     public function setUp()
     {
-        $this->urlRoot = 'http://'.$this->host.':'.$this->port;
+        if (empty($this->url)) {
+            $this->url = $this->protocol.'://'.$this->host.':'.$this->port;
+        }
+        $urlRemote = $this->protocolRemote.'://'.$this->hostRemote.':'.$this->portRemote.'/wd/hub';
 
-        $this->setHost($this->hostSelenium);
-        $this->setPort($this->portSelenium);
-        $this->setBrowserUrl($this->urlRoot);
-        $this->setBrowser($this->browser);
+        $capabilities = [WebDriverCapabilityType::BROWSER_NAME => $this->browser];
+        $this->driver = RemoteWebDriver::create($urlRemote, $capabilities);
     }
 
+    /**
+     * tearDown
+     *
+     * @return void
+     */
     public function tearDown()
     {
-        $this->stop();
+        $this->driver->quit();
+    }
+
+    /**
+     * Open page with the given url
+     *
+     * @param  string $path
+     *
+     * @return void
+     */
+    public function open($path = null)
+    {
+        $this->driver->get($this->route($path));
+    }
+
+    /**
+     * Create the url by the given path
+     *
+     * @param  string $path
+     *
+     * @return string
+     */
+    public function route($path = null)
+    {
+        if (is_string($path) && strtolower(substr($path, 0, 4)) == 'http') {
+            return $path;
+        }
+        return !empty($path) ? rtrim($this->url, '/').'/'.ltrim($path, '/') : $this->url;
     }
 }

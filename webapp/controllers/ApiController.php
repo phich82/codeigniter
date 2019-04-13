@@ -144,4 +144,41 @@ class ApiController extends CI_Controller
 
         return $CI->db->update_batch('messages', $params, $index);
     }
+
+    public function errorsJsonFormat($input)
+    {
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $errors = [];
+            foreach ($this->patterns_json_error() as $pattern) {
+                preg_match_all($pattern, $input, $matches);
+                foreach ($matches as $match) {
+                    $errors = array_unique(array_merge($errors, $match));
+                }
+                if (!empty($errors)) {
+                    return array_map(function ($error) {
+                        return trim(preg_replace('/\s\s+/', '', $error));
+                    }, $errors);
+                }
+            }
+            return $errors;
+        }
+        return true;
+    }
+
+    /**
+     * Patterns for wrong json format
+     *
+     * @return array
+     */
+    private function patterns_json_error()
+    {
+        return [
+            'has_special_quotes' => '#(\s*[a-zA-Z0-9\_\-\.]+\s*\:\s*\`.*\`\s*)#',
+            'miss_colon_first'   => '#(\s*\{\s*[^\:]*\s*\,)#',
+            'miss_colon_another' => '#(\s*\,\s*[^\:]*\s*\,\s*)#',
+            'miss_colon_last'    => '#(\s*\,\s*[^\:]*\s*\}\s*)#',
+            'has_comma_at_first' => '#(^\s*\{\s*\,\s*)#',
+            'has_comma_at_end'   => '#(\s*\,\s*\}\s*$)#',
+        ];
+    }
 }

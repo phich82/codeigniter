@@ -1,9 +1,9 @@
 <?php
 
-require_once 'MyTestCaseWeb.php';
+require_once 'MyTestCaseSelenium.php';
 require_once 'pages/StartPage.php';
 
-class SeleniumTest extends MyTestCaseWeb
+class SeleniumTest extends MyTestCaseSelenium
 {
     public function testTitle()
     {

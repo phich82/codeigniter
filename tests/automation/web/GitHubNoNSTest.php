@@ -1,14 +1,15 @@
 <?php
 
-namespace Tests\Automation\Web;
+require_once 'traits/WebDriverAssertions.php';
+require_once 'traits/WebDriverDevelop.php';
+require_once 'MyTestCaseWD.php';
 
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverKeys;
-use Tests\Automation\Web\MyTestCaseWeb;
-use Tests\Automation\Web\Traits\WebDriverDevelop;
-use Tests\Automation\Web\Traits\WebDriverAssertions;
+use tests\automation\web\traits\WebDriverDevelop;
+use tests\automation\web\traits\WebDriverAssertions;
 
-class GitHubTest extends MyTestCaseWeb
+class GitHubNoNSTest extends MyTestCaseWD
 {
     use WebDriverAssertions;
     use WebDriverDevelop;
@@ -23,7 +24,7 @@ class GitHubTest extends MyTestCaseWeb
     }
     public function testSearch()
     {
-        $this->open('/search');
+        $this->open($this->url.'/search');
 
         // find search field by its class & click on it
         $this->driver->findElement(WebDriverBy::cssSelector('.input-block'))->click();
