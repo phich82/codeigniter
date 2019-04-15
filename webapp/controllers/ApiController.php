@@ -147,22 +147,22 @@ class ApiController extends CI_Controller
 
     public function errorsJsonFormat($input)
     {
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $errors = [];
-            foreach ($this->patterns_json_error() as $pattern) {
-                preg_match_all($pattern, $input, $matches);
-                foreach ($matches as $match) {
-                    $errors = array_unique(array_merge($errors, $match));
-                }
-                if (!empty($errors)) {
-                    return array_map(function ($error) {
-                        return trim(preg_replace('/\s\s+/', '', $error));
-                    }, $errors);
-                }
-            }
-            return $errors;
+        if (json_last_error() == JSON_ERROR_NONE) {
+            return true;
         }
-        return true;
+        $errors = [];
+        foreach ($this->patterns_json_error() as $pattern) {
+            preg_match_all($pattern, $input, $matches);
+            foreach ($matches as $match) {
+                $errors = array_unique(array_merge($errors, $match));
+            }
+            if (!empty($errors)) {
+                return array_map(function ($error) {
+                    return trim(preg_replace('/\s\s+/', '', $error));
+                }, $errors);
+            }
+        }
+        return $errors;
     }
 
     /**
