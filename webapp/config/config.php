@@ -456,7 +456,20 @@ $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = array();
+$config['csrf_exclude_uris'] = array(
+    // Restful APIs For RSV Cloud
+    'api/v2/orderlist/orders_sales',
+    'api/v2/orderlist/orders_list',
+    'api/v2/orderlist/update_status',
+    'api/v2/orderlist/order_update',
+    'api/v2/orderlist/add_reserve',
+    'api/v2/orderlist/kitchen_print_result',
+    'api/v2/orderlist/healthcheck',
+    'api/v2/orderlist/store_pos_info',
+    'api/v2/orderlist/push_order',
+    'api/v2/orderlist/push_info',
+    'api/v2/upload_logs',
+);
 
 /*
 |--------------------------------------------------------------------------

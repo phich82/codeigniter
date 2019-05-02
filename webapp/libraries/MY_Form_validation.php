@@ -19,7 +19,7 @@ class MY_Form_validation extends CI_Form_validation
     {
         parent::__construct();
 
-        // reference to the CodeIgniter super object 
+        // reference to the CodeIgniter super object
         $this->CI =& get_instance();
     }
 
@@ -59,7 +59,7 @@ class MY_Form_validation extends CI_Form_validation
     public function array2($input, $field = null)
     {
         $params = !empty($this->validation_data) ? $this->validation_data : array_merge($this->CI->input->post(), $this->CI->input->get());
- 
+
         if (empty($field)) {
             throw new Exception('The array rule is required an argument.');
         }
@@ -89,7 +89,7 @@ class MY_Form_validation extends CI_Form_validation
 
         $firstElement = array_shift($parts);
         $valuesCheck  = [$firstElement => $params[$firstElement]];
-        
+
         // in case, inputs are checkboxes or radios
         if (!array_key_exists($firstElement, $params)) {
             return false;
@@ -464,6 +464,181 @@ class MY_Form_validation extends CI_Form_validation
             $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
         }
 
+        // if it is the nested array, go deeply
+        if ($keys) {
+            $key = array_shift($keys);
+            // key not exist
+            if (!isset($array[$key])) {
+                throw new Exception("Field [$key] is invalid.");
+            }
+            // get and return the reference to the sub-array with the current key
+            $subarray =& $this->array_access($array[$key], $keys);
+            return $subarray;
+        }
+        // return the match
+        return $array;
+    }
+
+
+
+
+    /**
+     * Accept the in rule
+     *
+     * @param string $value
+     * @param string $list
+     * @return bool
+     */
+    public function in($value, $list)
+    {
+        if (!in_array($value, explode(',', $list))) {
+            $this->set_message('in', 'The {field} field must be one of [' . $list . ']');
+            return false;
+        }
+        return true;
+    }
+
+	/**
+	 * datetime
+	 *
+	 * @param string $date
+	 * @param string $format
+	 * @return bool
+	 */
+	public function datetime($date, $format = 'Y-m-d H:i:s') {
+        if (date($format, strtotime($date)) == $date) {
+            return true;
+        }
+        $this->set_message('datetime', 'The {field} field has the wrong value or not in the format [' . $format . ']');
+        return false;
+	}
+
+	/**
+     * Validate the rule for checking the record exists in database by the given parameters
+     *
+     * @param  mixed $value
+     * @param  string $params [exist_by[orders:company_code:store_no]]
+     *
+     * @return bool
+     */
+    public function exist_by($value, $params)
+    {
+        if (empty($params)) {
+            $this->set_message('exist_by', 'The parameters [table, fields] in the rule [exist_by] are missed.');
+            return false;
+        }
+        $params = explode(':', $params);
+        $table  = array_shift($params);
+        if (!empty($params)) {
+			$CI =& get_instance();
+            $dataValidation = !empty($this->validation_data) ? $this->validation_data : array_merge(
+                $CI->input->post(),
+                $CI->input->get()
+            );
+            $where = [];
+            // for this field
+            $first = explode('=>', array_shift($params));
+            // mapping to column if any
+            $where[count($first) === 2 ? $first[1] : $first[0]] = $value;
+            // for other fields if any
+            foreach ($params as $param) {
+                $split = explode('=>', $param);
+                $field = $split[0];
+                // field not found
+                if (!isset($dataValidation[$field])) {
+                    $this->set_message('exist_by', 'The field ['.$field.'] in the rule [exist_by] does not found.');
+                    return false;
+                }
+                // mapping to column if any
+                $where[count($split) === 2 ? $split[1] : $field] = $dataValidation[$field];
+            }
+            $CI->load->database();
+            $rows = $CI->db->from($table)->where($where)->count_all_results();
+            // not found (no exist)
+            if ($rows <= 0) {
+                $this->set_message('exist_by', '['.$value.'] not found.');
+                return false;
+            }
+            return true;
+        }
+        // missing the where conditions
+        $this->set_message('exist_by', 'The parameters [fields] for the rule [exist_by] are missed.');
+        return false;
+	}
+
+	/**
+	 * Set the 'required' rule by the another fields
+	 *
+	 * @param  mixed $value
+	 * @param  string $params
+	 *
+	 * @return bool
+	 */
+	public function required_by($value, $params)
+    {
+        if (empty($params)) {
+            $this->set_message('required_by', 'The parameters of the rule [required_by] are missed.');
+            return false;
+        }
+		$fields = explode(':', $params);
+
+        if (!empty($fields)) {
+			$CI =& get_instance();
+            $dataValidation = !empty($this->validation_data) ? $this->validation_data : array_merge(
+                $CI->input->post(),
+                $CI->input->get()
+            );
+            foreach ($fields as $field) {
+				$split = explode('=>', $field);
+				// missing the values for checking
+				if (count($split) !== 2) {
+					$this->set_message('required_by', 'Missing the given values for checking the value of the field ['.$fieldThis.'] => [required_by rule].');
+                    return false;
+				}
+				$fieldThis   = $split[0];
+				$valuesGiven = explode(',', $split[1]);
+                // not the nested field but the field not found
+                if (strpos($fieldThis, '.') === false && !isset($dataValidation[$fieldThis])) {
+                    $this->set_message('required_by', 'The field ['.$fieldThis.'] for the rule [required_by] not found.');
+                    return false;
+                }
+                // the nested field but the values are not in the given list
+                if (strpos($fieldThis, '.') !== false) {
+					$valueChecked = &$this->array_access($dataValidation, explode('.', $fieldThis));
+					// required when in the given list but the value is empty
+                    if (in_array((string)$valueChecked, $valuesGiven) && empty($value)) {
+                        $this->set_message('required_by', 'The {field} field is required.');
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        // missing the where conditions
+        $this->set_message('required_by', 'The parameters of the rule [required_by] are missed.');
+        return false;
+	}
+
+    /**
+     * Get the value of array by the nested key string
+     *
+     * @param  array $array
+     * @param  array|string $keys
+     * @return mixed
+     * @throws Exception
+     */
+    private function &array_access(&$array, $keys)
+    {
+        // Check if the keys is a string
+        if (is_string($keys)) {
+            $firstChar = substr($keys, 0, 1);
+            if ($firstChar != '[') {
+                $pos = strpos($keys, '[');
+                $keys = $pos === false ? '['.$keys.']' : '["'.substr($keys, 0, $pos).'"]'.substr($keys, $pos);
+            }
+            // parse it to an array
+            $keys  = explode('][', preg_replace('/^\[|\]$/', '', str_replace(['"', '\''], ['', ''], $keys)));
+        }
         // if it is the nested array, go deeply
         if ($keys) {
             $key = array_shift($keys);
