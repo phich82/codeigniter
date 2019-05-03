@@ -16,7 +16,7 @@
     - Create migrations folder: /application/database/migrations
     - Create seeds folder:      /application/database/seeds
     - Open /application/config/migration.php:
-            $config['migration_path'] = APPPATH . 'migrations/'; 
+            $config['migration_path'] = APPPATH . 'migrations/';
         change to =>
             $config['migration_path'] = APPPATH.'database/migrations/';
 
@@ -94,3 +94,83 @@ No.	FUNCTION	    DESCRIPTION	                            PARAMETER(S)        USA
 ##   Open the CIPHPUnitTest.php, insert the following line right after the line 42 "require TESTPATH . 'TestCase.php';":
 
 	require TESTPATH . 'MyTestCase.php';
+
+
+CentOS crontab
+# run script every 1 minute interval
+*/1 * * * * /scripts/rsv_api.sh
+
+1. Connect via SSH and update the system software
+
+	sudo yum update
+
+2. Verify if cronie package is installed
+
+	sudo rpm -q cronie
+
+3. Install cronie package
+
+	sudo yum install cronie
+
+4. Check if  crond service is running
+
+	sudo systemctl status crond.service
+
+5. Configure cron jobs
+
+	sudo cat /etc/crontab
+
+	- The output should be similar to the one below:
+
+	SHELL=/bin/bash
+	PATH=/sbin:/bin:/usr/sbin:/usr/bin
+	MAILTO=root
+
+	# For details see man 4 crontabs
+
+	# Example of job definition:
+	# .---------------- minute (0 - 59)
+	# |  .------------- hour (0 - 23)
+	# |  |  .---------- day of month (1 - 31)
+	# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+	# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+	# |  |  |  |  |
+	# *  *  *  *  * user-name  command to be executed
+	37 * * * * root run-parts /etc/cron.hourly
+	23 5 * * * root run-parts /etc/cron.daily
+	19 3 * * 0 root run-parts /etc/cron.weekly
+	23 0 6 * * root run-parts /etc/cron.monthly
+
+	- Crontab syntax:
+		[minute] [hour] [day] [month day_of_week] [username] [command]
+
+	- An asterisk (*) in the crontab can be used to specify all valid values,
+	  so if you like command to be executed every day at midnight,
+	  you can add the following cron job:
+
+		0 0 * * * root /sample_command >/dev/null 2>&1
+
+		+ Your cron job will be run at:
+			2016-06-10 00:00:00
+			2016-06-11 00:00:00
+			2016-06-12 00:00:00
+			2016-06-13 00:00:00
+			2016-06-14 00:00:00
+			...
+
+	- Steps:
+		+ sudo vi /etc/crontab
+		+ add the following line:
+			# Config crontab for api of reservation: run script for every minute
+			# [command]: php [path_to_script_will_be_executed]: php /vagrant/index.php apis/apicron/run
+			*/1 * * * * root php /vagrant/index.php apis/apicron/run
+		+ Run command:
+			sudo systemctl restart crond.service
+
+6. Restart the crond service
+
+	sudo systemctl restart crond.service
+
+	- For more information you can check the man pages:
+		man cron
+		man crontab
