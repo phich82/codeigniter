@@ -9,9 +9,9 @@ require 'Validator.php';
 class FormRequest extends Validator
 {
     public $error;
+    public $params;
     protected $request;
     protected $input;
-    protected $params;
     private $CI;
 
     /**
@@ -65,7 +65,7 @@ class FormRequest extends Validator
                 $this->CI->form_validation->set_data($data);
             }
 
-            // get all the parameters from request
+            // get all parameters from the request
             $this->params = $this->_getDataValidation();
 
             // set delimiter
@@ -102,7 +102,69 @@ class FormRequest extends Validator
                 }
             }
         }
+
         return $config;
+    }
+
+    /**
+     * Process the nested fields in rules
+     *
+     * @param  string $nestedFieldKey
+     * @param  string $rulesValue
+     *
+     * @return string
+     */
+    private function _processNestedFieldsInRules($nestedFieldKey, $rulesValue)
+    {
+        $star  = '*';
+        // the nested fields not found
+        if (strpos($rulesValue, $star) === false) {
+            return $rulesValue;
+        }
+
+        $dot   = '.';
+        $colon = ':';
+        $slash = '|';
+        $arrow = '=>';
+        $bracketL = '[';
+        $bracketR = ']';
+
+        // extract the keys of the nested field
+        $keysRoot   = explode($dot, str_replace($bracketL, $dot, str_replace($bracketR.$bracketL, $dot, rtrim($nestedFieldKey, $bracketR))));
+        $rulesSplit = explode($slash, $rulesValue);
+        $out = [];
+
+        foreach ($rulesSplit as $ruleRight) {
+            $ruleNoBrackets = preg_replace('/(.+)\[(.*)\]$/i', '$1'.$colon.'$2', $ruleRight);
+            $parts = explode($colon, $ruleNoBrackets);
+            $ruleName = array_shift($parts);
+
+            // build a new rule string
+            $rule = $ruleName.$bracketL;
+            // loop the nested keys
+            foreach ($parts as $part) {
+                // check the mapping key if any
+                $split = explode($arrow, $part);
+                // extract the parts of this key
+                $keys  = explode($dot, $split[0]);
+                // check whether it is the nested key
+                if (count($keysRoot) === count($keys)) {
+                    foreach ($keysRoot as $k => $v) {
+                        // replace '*' with the numerical value matches to the nested position of key in the nested root field
+                        if (is_numeric($v) && $keys[$k] == $star) {
+                            $keys[$k] = $v;
+                        }
+                    }
+                    // append to the rule string
+                    $rule .= implode($dot, $keys).(count($split) === 2 ? $arrow.$split[1] : '').$colon;
+                } else {
+                    // append to the rule string
+                    $rule .= $part.$colon;
+                }
+            }
+            $out[] = rtrim($rule, $colon).$bracketR;
+        }
+        return implode($slash, $out);
     }
 
     /**
@@ -137,63 +199,6 @@ class FormRequest extends Validator
     }
 
     /**
-     * Process the nested fields in rules
-     *
-     * @param  string $nestedFieldKey
-     * @param  string $rulesValue
-     *
-     * @return string
-     */
-    private function _processNestedFieldsInRules($nestedFieldKey, $rulesValue)
-    {
-        $star  = '*';
-        // the nested fields not found
-        if (strpos($rulesValue, $star) === false) {
-            return $rulesValue;
-        }
-        $dot   = '.';
-        $colon = ':';
-        $slash = '|';
-        $arrow = '=>';
-        $bracketL = '[';
-        $bracketR = ']';
-        // extract the keys of the nested field
-        $keysRoot   = explode($dot, str_replace($bracketL, $dot, str_replace($bracketR.$bracketL, $dot, rtrim($nestedFieldKey, $bracketR))));
-        $rulesSplit = explode($slash, $rulesValue);
-        $out = [];
-        foreach ($rulesSplit as $ruleRight) {
-            $ruleNoBrackets = preg_replace('/(.+)\[(.*)\]$/i', '$1'.$colon.'$2', $ruleRight);
-            $parts = explode($colon, $ruleNoBrackets);
-            $ruleName = array_shift($parts);
-            // build a new rule string
-            $rule = $ruleName.$bracketL;
-            // loop the nested keys
-            foreach ($parts as $part) {
-                // check the mapping key if any
-                $split = explode($arrow, $part);
-                // extract the parts of this key
-                $keys  = explode($dot, $split[0]);
-                // check whether it is the nested key
-                if (count($keysRoot) === count($keys)) {
-                    foreach ($keysRoot as $k => $v) {
-                        // replace '*' with the numerical value matches to the nested position of key in the nested root field
-                        if (is_numeric($v) && $keys[$k] == $star) {
-                            $keys[$k] = $v;
-                        }
-                    }
-                    // append to the rule string
-                    $rule .= implode($dot, $keys).(count($split) === 2 ? $arrow.$split[1] : '').$colon;
-                } else {
-                    // append to the rule string
-                    $rule .= $part.$colon;
-                }
-            }
-            $out[] = rtrim($rule, $colon).$bracketR;
-        }
-        return implode($slash, $out);
-    }
-
-    /**
      * Get the nested array rules
      * Example: ['colors.4.color.*' => 'array']
      *
@@ -213,16 +218,15 @@ class FormRequest extends Validator
         }
 
         $currentValue = $data[$firstElement];
-        $defaultTotal = 0;
 
         foreach ($parts as $part) {
             if ($part == '*') {
                 // key not exist, ignore it
-                if (!is_array($currentValue) || empty(array_keys($currentValue)) || !isset($currentValue[array_keys($currentValue)[0]])) {
+                if (empty(array_keys($currentValue)) || !isset($currentValue[array_keys($currentValue)[0]])) {
                     return [];
                 }
 
-                $totalElements = $defaultTotal == 1 ? 1 : count($currentValue);
+                $totalElements = count($currentValue);
                 $currentValue  = $currentValue[array_keys($currentValue)[0]];
                 $temp = [];
                 for ($s=0; $s < $totalElements; $s++) {
@@ -233,13 +237,11 @@ class FormRequest extends Validator
                 $rules = $temp;
             } else {
                 // key not exist, ignore it
-                if (isset($currentValue[$part])) {
-                    $defaultTotal = 0;
-                    $currentValue = $currentValue[$part];
-                } else {
-                    $defaultTotal = 1;
+                if (!isset($currentValue[$part])) {
+                    return [];
                 }
 
+                $currentValue = $currentValue[$part];
                 $temp = [];
                 foreach ($rules as $rule) {
                     $temp[] = $rule."[".$part."]";
@@ -397,20 +399,10 @@ class FormRequest extends Validator
         }
         return !empty($this->CI->form_validation->validation_data)
                     ? $this->CI->form_validation->validation_data
-                    : $this->_getRequestParams();
-    }
-
-    /**
-     * Get all parameters from request
-     *
-     * @return array
-     */
-    private function _getRequestParams()
-    {
-        return array_merge(
-            $this->CI->input->post(),
-            $this->CI->input->get()
-        );
+                    : array_merge(
+                        $this->CI->input->post(),
+                        $this->CI->input->get()
+                    );
     }
 
     /**
