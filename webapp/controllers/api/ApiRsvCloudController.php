@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../controllers/apis/ApiController.php');
+require_once(dirname(__FILE__) . '/../../controllers/api/ApiController.php');
 require_once(dirname(__FILE__) . '/../../Api/Helpers/HttpCode.php');
 require_once(dirname(__FILE__) . '/../../Api/Helpers/ApiLog.php');
 
@@ -219,4 +219,10 @@ class ApiRsvCloudController extends ApiController
         ], HttpCode::HTTP_OK);
     }
 
+    public function testGet()
+    {
+        $client = new GuzzleHttp\Client(['verify' => false]);
+        $response = $client->request('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+        var_dump($response->getStatusCode(), json_decode($response->getBody(), true));
+    }
 }

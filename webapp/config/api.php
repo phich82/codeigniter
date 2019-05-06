@@ -153,4 +153,4 @@ $config['file_validate_rules'] = [
 ];
 
 $config['ignore_token'] = false;
-$config['api_existed_record_value'] = EXISTED_RECORD_VALUE;
+//$config['api_existed_record_value'] = EXISTED_RECORD_VALUE;

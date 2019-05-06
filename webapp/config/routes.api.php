@@ -24,3 +24,5 @@ $route['api/v2/orderlist/kitchen_print_result'] = 'api/ApiRsvCloudController/get
 $route['api/v2/orderlist/healthcheck'] = 'api/ApiRsvCloudController/checkHealthPost';
 // $route['api/v2/orderlist/push_order'] = 'api/ApiRsvCloudController/sendOrdersToServicesPost';
 // $route['api/v2/orderlist/order_update'] = 'api/ApiRsvCloudController/updateOrdersPost';
+
+$route['api/v2/orderlist/test'] = 'api/ApiRsvCloudController/testGet';

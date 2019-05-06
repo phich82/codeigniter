@@ -89,25 +89,25 @@ abstract class ApiController extends CI_Controller
         // validate json format from the incomming request
         if ($segments[3] != 'upload_logs') {
             $errorsJson = $this->_validateJsonFormat($this->input->raw_input_stream);
-            if ($errorsJson !== true) {
-                return $this->response->json([
-                    $this->response_result_key => $this->error_status,
-                    $this->response_error_key  => [
-                        $this->response_message_key  => HttpCode::message(HttpCode::HTTP_BAD_REQUEST),
-                        $this->validation_errors_key => $errorsJson
-                    ],
-                ], HttpCode::HTTP_OK);
-            }
+            // if ($errorsJson !== true) {
+            //     return $this->response->json([
+            //         $this->response_result_key => $this->error_status,
+            //         $this->response_error_key  => [
+            //             $this->response_message_key  => HttpCode::message(HttpCode::HTTP_BAD_REQUEST),
+            //             $this->validation_errors_key => $errorsJson
+            //         ],
+            //     ], HttpCode::HTTP_OK);
+            // }
         }
 
         $ignoreToken = isset($segments[4]) && ( $segments[4] == 'orders_list' || $segments[3] == 'upload_logs');
         // verify the authentication
-        if (!$ignoreToken && !$this->config->item('ignore_token') && !VerifyAuth::verify(array_merge($this->_body(), $this->_headers()))) {
-            return $this->response->json([
-                $this->response_result_key => $this->error_status,
-                $this->response_error_key  => HttpCode::message(HttpCode::HTTP_UNAUTHORIZED)
-            ], HttpCode::HTTP_OK);
-        }
+        // if (!$ignoreToken && !$this->config->item('ignore_token') && !VerifyAuth::verify(array_merge($this->_body(), $this->_headers()))) {
+        //     return $this->response->json([
+        //         $this->response_result_key => $this->error_status,
+        //         $this->response_error_key  => HttpCode::message(HttpCode::HTTP_UNAUTHORIZED)
+        //     ], HttpCode::HTTP_OK);
+        // }
 
         // validate the request
         $class_request = ucfirst($methodNoSuffix.$this->config->item('request_class_suffix'));
