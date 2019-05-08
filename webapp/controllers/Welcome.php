@@ -26,54 +26,57 @@ class Welcome extends CI_Controller {
         // var_dump($this->crypt_rsv->decrypt($hashed));
         // var_dump($this->crypt_rsv->verify('u0019003', $hashed));
 
-        $client = new GuzzleHttp\Client([
-			'verify' => false,
-			//'proxy' => 'tcp://100.66.179.28:80',
-			'request.options' => [
-				//'proxy' => 'tcp://12.34.56.78:3128',
-			]
-		]);
+        // $client = new GuzzleHttp\Client([
+		// 	'verify' => false,
+		// 	//'proxy' => 'tcp://100.66.179.28:80',
+		// 	'request.options' => [
+		// 		//'proxy' => 'tcp://12.34.56.78:3128',
+		// 	]
+		// ]);
 
-		$promises = [];
-		for ($i = 0; $i <= 10; $i++) {
-			$promises['id_'.$i] = $client->requestAsync('GET', 'https://jsonplaceholder.typicode.com/posts/'.$i);
-		}
+		// $promises = [];
+		// for ($i = 1; $i <= 10; $i++) {
+		// 	$promises['id_'.$i] = $client->requestAsync('GET', 'https://jsonplaceholder.typicode.com/posts/'.$i);
+		// }
 
-		// get all promises (included promise rejected (error))
-		$results = GuzzleHttp\Promise\settle($promises)->wait();
+        // // Wait for the requests to complete, even if some of them fail
+        // $results = GuzzleHttp\Promise\settle($promises)->wait();
 
-		$out = [];
-		foreach ($results as $k => $result) {
-			$id = explode('_', $k)[1];
+        // Wait on all of the requests to complete. Throws a ConnectException if any of the requests fail
+		//$results = GuzzleHttp\Promise\unwrap($promises);
 
-			if ($result['state'] == 'rejected') { // error
-				$out[] = [
-					'status_code' => $result['reason']->getResponse()->getStatusCode(),
-					'sent_status' => 1, // 1: failed, 2: success
-					'id' => $id,
-					'response' => [
-						'headers'  => (array) $result['reason']->getRequest()->getHeaders(),
-						'response' => (array) $result['reason']->getResponse(),
-						'body'     => [],
-						'status'   => 'failed'
-					]
-				];
-			} else {
-				$body = json_decode($result['value']->getBody(), true);
-				$out[] = [
-					'status_code' => $result['value']->getStatusCode(),
-					'sent_status' => 2,
-					'id' => $id,
-					'response' => [
-						'headers'  => (array) $result['value']->getHeaders(),
-						'response' => (array) $result['value'],
-						'body'     => $body,
-						'status'   => count($body) > 0 ? 'success' : 'failed'
-					]
-				];
-			}
-		}
-		echo json_encode($out);die();
+		// $out = [];
+		// foreach ($results as $k => $result) {
+		// 	$id = explode('_', $k)[1];
+
+		// 	if ($result['state'] == 'rejected') { // error
+		// 		$out[] = [
+		// 			'status_code' => $result['reason']->getResponse()->getStatusCode(),
+		// 			'sent_status' => 1, // 1: failed, 2: success
+		// 			'id' => $id,
+		// 			'response' => [
+		// 				'headers'  => (array) $result['reason']->getRequest()->getHeaders(),
+		// 				'response' => (array) $result['reason']->getResponse(),
+		// 				'body'     => [],
+		// 				'status'   => 'failed'
+		// 			]
+		// 		];
+		// 	} else {
+		// 		$body = json_decode($result['value']->getBody(), true);
+		// 		$out[] = [
+		// 			'status_code' => $result['value']->getStatusCode(),
+		// 			'sent_status' => 2,
+		// 			'id' => $id,
+		// 			'response' => [
+		// 				'headers'  => (array) $result['value']->getHeaders(),
+		// 				'response' => (array) $result['value'],
+		// 				'body'     => $body,
+		// 				'status'   => count($body) > 0 ? 'success' : 'failed'
+		// 			]
+		// 		];
+		// 	}
+		// }
+		// echo json_encode($out);die();
 
 		$this->load->view('welcome_message');
 	}

@@ -8,6 +8,7 @@ class MY_Exceptions extends CI_Exceptions
 {
 
     /**
+     * @override
      * Force exception throwing on errors
      */
     public function show_error($heading, $message, $template = 'error_general', $status_code = 500)
@@ -19,6 +20,23 @@ class MY_Exceptions extends CI_Exceptions
         throw new CiError($message);
     }
 
+    /**
+     * @override
+     * Force exception throwing on exception
+     */
+    // public function show_exception($exception)
+    // {
+
+    // }
+
+    /**
+     * @override
+     * Force exception throwing native php errors
+     */
+    // public function show_php_error($severity, $message, $filepath, $line)
+    // {
+
+    // }
 }
 
 /**
